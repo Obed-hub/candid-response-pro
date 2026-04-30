@@ -62,7 +62,7 @@ const Inbox = () => {
       ) : (
         <div className="space-y-2">
           {filtered.map((f: any) => (
-            <Link key={f.id} to={`/feedback/${f.id}`} className="block">
+            <Link key={f.id} to={`/feedback-detail/${f.id}`} className="block">
               <Card className="p-4 hover:shadow-card transition-all">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary-soft text-primary grid place-items-center font-semibold">

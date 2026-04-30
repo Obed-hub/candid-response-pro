@@ -100,7 +100,7 @@ const Dashboard = () => {
           ) : (
             <div className="space-y-2">
               {stats.recent.map((f: any) => (
-                <Link key={f.id} to={`/feedback/${f.id}`} className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/60 border border-border">
+                <Link key={f.id} to={`/feedback-detail/${f.id}`} className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/60 border border-border">
                   <div className="w-8 h-8 rounded-full bg-primary-soft text-primary grid place-items-center font-semibold text-xs">
                     {f.is_anonymous ? "?" : (f.customer_name?.[0] ?? "?")}
                   </div>

@@ -14,7 +14,225 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      businesses: {
+        Row: {
+          business_name: string
+          business_type: string | null
+          created_at: string
+          description: string | null
+          feedback_slug: string
+          id: string
+          is_public: boolean
+          logo_url: string | null
+          owner_id: string
+          physical_address: string | null
+          website_url: string | null
+        }
+        Insert: {
+          business_name: string
+          business_type?: string | null
+          created_at?: string
+          description?: string | null
+          feedback_slug: string
+          id?: string
+          is_public?: boolean
+          logo_url?: string | null
+          owner_id: string
+          physical_address?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          business_name?: string
+          business_type?: string | null
+          created_at?: string
+          description?: string | null
+          feedback_slug?: string
+          id?: string
+          is_public?: boolean
+          logo_url?: string | null
+          owner_id?: string
+          physical_address?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      feedback: {
+        Row: {
+          business_id: string
+          category: string | null
+          created_at: string
+          customer_email: string | null
+          customer_name: string | null
+          id: string
+          is_anonymous: boolean
+          message: string
+          rating: number | null
+          sentiment: string | null
+          source: string
+          status: string
+        }
+        Insert: {
+          business_id: string
+          category?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          is_anonymous?: boolean
+          message: string
+          rating?: number | null
+          sentiment?: string | null
+          source?: string
+          status?: string
+        }
+        Update: {
+          business_id?: string
+          category?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          is_anonymous?: boolean
+          message?: string
+          rating?: number | null
+          sentiment?: string | null
+          source?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      qr_codes: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          qr_url: string
+          scans_count: number
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          qr_url: string
+          scans_count?: number
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          qr_url?: string
+          scans_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qr_codes_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          feedback_limit: number
+          id: string
+          plan_name: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback_limit?: number
+          id?: string
+          plan_name?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback_limit?: number
+          id?: string
+          plan_name?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      widget_settings: {
+        Row: {
+          business_id: string
+          button_text: string
+          created_at: string
+          id: string
+          is_enabled: boolean
+          position: string
+          theme: string
+          widget_title: string
+        }
+        Insert: {
+          business_id: string
+          button_text?: string
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          position?: string
+          theme?: string
+          widget_title?: string
+        }
+        Update: {
+          business_id?: string
+          button_text?: string
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          position?: string
+          theme?: string
+          widget_title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "widget_settings_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: true
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

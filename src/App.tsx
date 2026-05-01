@@ -18,7 +18,10 @@ import WidgetPage from "./pages/WidgetPage";
 import Settings from "./pages/Settings";
 import Pricing from "./pages/Pricing";
 import PublicFeedback from "./pages/PublicFeedback";
-import NotFound from "./pages/NotFound.tsx";
+import PublicReputation from "./pages/PublicReputation";
+import CommunityPage from "./pages/CommunityPage";
+import SmartTriggers from "./pages/SmartTriggers";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +38,8 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/feedback/:slug" element={<PublicFeedback />} />
+            <Route path="/reputation/:slug" element={<PublicReputation />} />
+            <Route path="/community/:slug" element={<CommunityPage />} />
 
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/businesses" element={<ProtectedRoute><Businesses /></ProtectedRoute>} />
@@ -43,6 +48,7 @@ const App = () => (
             <Route path="/feedback-detail/:id" element={<ProtectedRoute><FeedbackDetail /></ProtectedRoute>} />
             <Route path="/qr" element={<ProtectedRoute><QrPage /></ProtectedRoute>} />
             <Route path="/widget" element={<ProtectedRoute><WidgetPage /></ProtectedRoute>} />
+            <Route path="/triggers" element={<ProtectedRoute><SmartTriggers /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFound />} />

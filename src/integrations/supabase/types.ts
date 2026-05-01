@@ -27,6 +27,9 @@ export type Database = {
           owner_id: string
           physical_address: string | null
           website_url: string | null
+          page_views: number
+          form_started: number
+          app_installs: number
         }
         Insert: {
           business_name: string
@@ -40,6 +43,9 @@ export type Database = {
           owner_id: string
           physical_address?: string | null
           website_url?: string | null
+          page_views?: number
+          form_started?: number
+          app_installs?: number
         }
         Update: {
           business_name?: string
@@ -53,6 +59,9 @@ export type Database = {
           owner_id?: string
           physical_address?: string | null
           website_url?: string | null
+          page_views?: number
+          form_started?: number
+          app_installs?: number
         }
         Relationships: []
       }
@@ -70,6 +79,12 @@ export type Database = {
           sentiment: string | null
           source: string
           status: string
+          business_reply: string | null
+          guest_session_id: string | null
+          reply_at: string | null
+          audio_url: string | null
+          is_featured: boolean
+          visual_url: string | null
         }
         Insert: {
           business_id: string
@@ -84,6 +99,12 @@ export type Database = {
           sentiment?: string | null
           source?: string
           status?: string
+          business_reply?: string | null
+          guest_session_id?: string | null
+          reply_at?: string | null
+          audio_url?: string | null
+          is_featured?: boolean
+          visual_url?: string | null
         }
         Update: {
           business_id?: string
@@ -98,6 +119,12 @@ export type Database = {
           sentiment?: string | null
           source?: string
           status?: string
+          business_reply?: string | null
+          guest_session_id?: string | null
+          reply_at?: string | null
+          audio_url?: string | null
+          is_featured?: boolean
+          visual_url?: string | null
         }
         Relationships: [
           {
@@ -202,6 +229,9 @@ export type Database = {
           position: string
           theme: string
           widget_title: string
+          exit_intent_enabled: boolean
+          delay_seconds: number
+          scroll_percent: number
         }
         Insert: {
           business_id: string
@@ -212,6 +242,9 @@ export type Database = {
           position?: string
           theme?: string
           widget_title?: string
+          exit_intent_enabled?: boolean
+          delay_seconds?: number
+          scroll_percent?: number
         }
         Update: {
           business_id?: string
@@ -222,6 +255,9 @@ export type Database = {
           position?: string
           theme?: string
           widget_title?: string
+          exit_intent_enabled?: boolean
+          delay_seconds?: number
+          scroll_percent?: number
         }
         Relationships: [
           {

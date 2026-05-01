@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
-import { LayoutDashboard, Inbox, Building2, QrCode, Code2, Settings, LogOut, Sparkles } from "lucide-react";
+import { LayoutDashboard, Inbox, Building2, QrCode, Code2, Settings, LogOut, Sparkles, Zap } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
@@ -10,6 +10,7 @@ const items = [
   { to: "/inbox", label: "Feedback inbox", icon: Inbox },
   { to: "/qr", label: "QR codes", icon: QrCode },
   { to: "/widget", label: "Website widget", icon: Code2 },
+  { to: "/triggers", label: "Smart Triggers", icon: Zap },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 

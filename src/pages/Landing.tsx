@@ -8,8 +8,11 @@ import {
   QrCode, Globe2, ShieldCheck, LineChart, MessageSquare, Star, Smile, Frown, Meh,
   Store, Utensils, Scissors, ShoppingBag, GraduationCap, Stethoscope, Code2, Briefcase,
   User, Church, Sparkles, ArrowRight, CheckCircle2, AlertTriangle, EyeOff, Inbox,
-  Zap, Tag, Activity, Mail, Download, Building2, Heart
+  Zap, Tag, Activity, Mail, Download, Building2, Heart,
+  Users, Share2, Search, ArrowUpCircle
 } from "lucide-react";
+import { SEO } from "@/components/SEO";
+import { Badge } from "@/components/ui/badge";
 
 const useCases = [
   { icon: Utensils, title: "Restaurants", desc: "QR codes on tables — rate food, service, and waiting time." },
@@ -27,23 +30,26 @@ const useCases = [
 const features = [
   { icon: EyeOff, title: "Anonymous feedback", desc: "Customers speak freely — name and email are optional." },
   { icon: Globe2, title: "Public feedback page", desc: "Each business gets a beautiful shareable link." },
+  { icon: Users, title: "Public community board", desc: "Let users upvote ideas and see your public roadmap." },
+  { icon: Search, title: "SEO optimized", desc: "Your roadmap and feedback are discoverable by search engines." },
+  { icon: MessageSquare, title: "2-way communication", desc: "Reply to feedback and close the loop with your customers." },
   { icon: QrCode, title: "QR code generator", desc: "Print, scan, collect. Perfect for physical locations." },
   { icon: Code2, title: "Website widget", desc: "Embed a feedback button on your online store or SaaS." },
   { icon: Star, title: "Rating system", desc: "1–5 star ratings with category breakdowns." },
-  { icon: Tag, title: "Comment categories", desc: "Complaints, suggestions, reviews, bug reports & more." },
-  { icon: Activity, title: "Status workflow", desc: "Move feedback through New → In Review → Resolved." },
-  { icon: Sparkles, title: "Sentiment detection", desc: "Quickly spot positive vs. negative feedback." },
-  { icon: Heart, title: "Customer testimonials", desc: "Turn 5-star feedback into social proof instantly." },
-  { icon: Inbox, title: "Complaint inbox", desc: "Never miss a complaint — all in one organized view." },
+  { icon: Sparkles, title: "AI sentiment detection", desc: "Quickly spot positive vs. negative feedback automatically." },
+  { icon: Heart, title: "Real human connection", desc: "Build trust with personal responses to every piece of feedback." },
+  { icon: Activity, title: "Status workflow", desc: "Move feedback through New → Planned → Shipped." },
   { icon: Building2, title: "Multi-business support", desc: "Manage multiple shops, brands, or locations." },
-  { icon: Mail, title: "Email notifications", desc: "Get alerted the moment new feedback arrives." },
-  { icon: Download, title: "Export feedback", desc: "Download CSV reports for your team or board." },
-  { icon: ShieldCheck, title: "Private & secure", desc: "Your data is yours. No selling, no spam, ever." },
 ];
 
 const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Feedback Pro - Collect Customer Feedback Online & In-Store" 
+        description="Your customers have feedback but you’re not hearing it. That’s why they don’t come back. Feedback Pro helps you listen and grow with honest feedback via QR codes and widgets."
+        keywords="feedback, customer reviews, qr code feedback, website widget, anonymous feedback, roadmap, business reviews"
+      />
       <SiteHeader />
 
       {/* HERO */}
@@ -51,13 +57,13 @@ const Landing = () => {
         <div className="container py-16 md:py-24 grid lg:grid-cols-2 gap-10 items-center">
           <div className="space-y-6 animate-fade-in">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-soft text-primary text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5" /> For physical & online businesses
+              <Sparkles className="w-3.5 h-3.5" /> For physical stores & online platforms
             </span>
             <h1 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">
-              Collect honest feedback from customers — <span className="text-primary">online or in-store</span>.
+              Your customers & users have feedback — <span className="text-primary">but you’re not hearing it.</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl">
-              Feedback Pro helps businesses collect anonymous feedback, customer complaints, reviews, suggestions, and testimonials through QR codes, shareable links, and website widgets.
+              That’s why they don’t come back. Feedback Pro gives your customers a voice through QR codes and website widgets, so you can fix issues before they lose interest.
             </p>
             <div className="flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-gradient-cta shadow-glow">
@@ -116,31 +122,72 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* SOLUTION */}
-      <section className="bg-gradient-soft py-20">
-        <div className="container">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <span className="text-4xl">💡</span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-3">Give customers a simple way to speak honestly</h2>
-            <p className="text-muted-foreground mt-4 text-lg">
-              Feedback Pro gives every business a private feedback system — anonymous by default, easy to act on.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {[
-              { icon: QrCode, title: "QR for physical locations", desc: "Display QR codes anywhere customers spend time." },
-              { icon: Code2, title: "Widget for online stores", desc: "Drop-in feedback button for any website." },
-              { icon: EyeOff, title: "Anonymous feedback", desc: "Customers feel safe to share what really matters." },
-              { icon: LineChart, title: "Dashboard & analytics", desc: "Track, organize, and respond — all in one place." },
-            ].map((c) => (
-              <Card key={c.title} className="p-6 bg-card border-border">
-                <div className="w-10 h-10 rounded-lg bg-primary-soft text-primary grid place-items-center mb-3">
-                  <c.icon className="w-5 h-5" />
+      {/* COMMUNITY & ROADMAP SECTION */}
+      <section className="bg-zinc-950 text-white py-24 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/10 blur-[120px] -z-0" />
+        <div className="container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
+                <Users className="w-4 h-4" /> Community Driven
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                Build a community around your <span className="text-primary">product roadmap</span>.
+              </h2>
+              <p className="text-zinc-400 text-lg leading-relaxed">
+                Don't just collect feedback — engage with it. Let your customers upvote features, track progress, and see what's coming next. SEO-optimized and ready to rank.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-6">
+                {[
+                  { icon: ArrowUpCircle, title: "Upvote Ideas", desc: "Let your fans tell you what to build next." },
+                  { icon: Globe2, title: "Public Roadmap", desc: "Transparency that builds deep trust." },
+                  { icon: Search, title: "SEO Friendly", desc: "Appear in search results for your features." },
+                  { icon: MessageSquare, title: "2-Way Chat", desc: "Real conversations with your customers." },
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="shrink-0 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary">
+                      <item.icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white mb-1">{item.title}</h4>
+                      <p className="text-zinc-500 text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="relative">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-sm">
+                <div className="flex items-center gap-2 mb-4 px-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                  <div className="ml-4 text-[10px] text-zinc-500 font-mono">community.feedback.pro/your-brand</div>
                 </div>
-                <h3 className="font-semibold mb-1">{c.title}</h3>
-                <p className="text-sm text-muted-foreground">{c.desc}</p>
-              </Card>
-            ))}
+                <div className="space-y-3">
+                  {[
+                    { t: "Add dark mode support", v: 142, s: "Planned" },
+                    { t: "Integrate with Slack", v: 89, s: "In Progress" },
+                    { t: "Mobile app for iOS", v: 215, s: "Shipped" },
+                  ].map((r, i) => (
+                    <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-primary/20 flex flex-col items-center justify-center">
+                          <span className="text-xs font-bold text-primary">{r.v}</span>
+                          <span className="text-[8px] uppercase font-bold text-primary/60">votes</span>
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold text-white">{r.t}</div>
+                          <div className="text-[10px] text-zinc-500">Suggested by Anonymous</div>
+                        </div>
+                      </div>
+                      <Badge className="bg-zinc-800 text-zinc-300 border-none text-[10px]">{r.s}</Badge>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/20 blur-3xl -z-10" />
+            </div>
           </div>
         </div>
       </section>
@@ -155,7 +202,7 @@ const Landing = () => {
           {[
             { n: "01", emoji: "🏗️", title: "Create your feedback space", desc: "Sign up and add your business. We generate a public feedback page instantly." },
             { n: "02", emoji: "📲", title: "Share your link, QR, or widget", desc: "Print the QR for your shop, share the link, or embed the widget on your site." },
-            { n: "03", emoji: "📊", title: "Read, organize, and act", desc: "Filter by rating, category, sentiment, and status — and respond to issues fast." },
+            { n: "03", emoji: "📊", title: "Read, organize, and engage", desc: "Respond to feedback, push feature ideas to your public roadmap, and let the community upvote them." },
           ].map((s) => (
             <div key={s.n} className="relative p-6 rounded-2xl border border-border bg-card shadow-sm">
               <div className="absolute -top-3 left-6 px-2.5 py-0.5 rounded-md bg-primary text-primary-foreground text-xs font-bold">STEP {s.n}</div>

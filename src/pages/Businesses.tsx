@@ -5,13 +5,20 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, ExternalLink, Building2, Copy } from "lucide-react";
+import { Plus, ExternalLink, Building2, Copy, Pencil, ImagePlus } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const Businesses = () => {
   const { user } = useAuth();
   const [list, setList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<any>(null);
+  const [editForm, setEditForm] = useState({ business_name: "", description: "", logo_url: "" });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -24,6 +31,61 @@ const Businesses = () => {
   const copy = (slug: string) => {
     navigator.clipboard.writeText(`${window.location.origin}/feedback/${slug}`);
     toast.success("Link copied!");
+  };
+
+  const openEdit = (b: any) => {
+    setEditing(b);
+    setEditForm({ business_name: b.business_name, description: b.description || "", logo_url: b.logo_url || "" });
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_SIZE = 256;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Use JPEG for broad compatibility and smaller base64 size without alpha
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+        setEditForm(prev => ({ ...prev, logo_url: dataUrl }));
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const saveEdit = async () => {
+    if (!editing) return;
+    setIsSaving(true);
+    const { error } = await supabase.from("businesses").update(editForm).eq("id", editing.id);
+    setIsSaving(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Business profile updated!");
+    setList(list.map(b => b.id === editing.id ? { ...b, ...editForm } : b));
+    setEditing(null);
   };
 
   return (
@@ -51,12 +113,54 @@ const Businesses = () => {
               <p className="text-xs text-muted-foreground line-clamp-2 mt-1 min-h-[2rem]">{b.description ?? "No description"}</p>
               <div className="mt-4 flex gap-2">
                 <Button size="sm" variant="outline" className="flex-1" onClick={() => copy(b.feedback_slug)}><Copy className="w-3.5 h-3.5 mr-1" /> Copy link</Button>
+                <Button size="sm" variant="outline" onClick={() => openEdit(b)} title="Edit profile"><Pencil className="w-3.5 h-3.5" /></Button>
                 <Button size="sm" asChild><a href={`/feedback/${b.feedback_slug}`} target="_blank" rel="noreferrer"><ExternalLink className="w-3.5 h-3.5" /></a></Button>
               </div>
             </Card>
           ))}
         </div>
       )}
+
+      <Dialog open={!!editing} onOpenChange={(v) => !v && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Business Profile</DialogTitle></DialogHeader>
+          <div className="space-y-4 pt-2">
+            <div>
+              <Label>Business Name</Label>
+              <Input className="mt-1" value={editForm.business_name} onChange={e => setEditForm({...editForm, business_name: e.target.value})} />
+            </div>
+            <div>
+              <Label>Business Logo</Label>
+              <div className="flex items-center gap-4 mt-2">
+                {editForm.logo_url ? (
+                  <img src={editForm.logo_url} alt="Logo" className="w-16 h-16 rounded-xl object-cover ring-1 ring-border" />
+                ) : (
+                  <div className="w-16 h-16 rounded-xl bg-secondary flex items-center justify-center text-muted-foreground"><ImagePlus className="w-6 h-6" /></div>
+                )}
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Button type="button" variant="outline" size="sm" onClick={() => document.getElementById('logo-upload')?.click()}>
+                      Upload Image
+                    </Button>
+                    <input id="logo-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                    {editForm.logo_url && (
+                      <Button type="button" variant="ghost" size="sm" className="text-destructive" onClick={() => setEditForm({...editForm, logo_url: ""})}>Remove</Button>
+                    )}
+                  </div>
+                  <Input placeholder="Or paste image URL" value={editForm.logo_url?.startsWith('data:') ? '' : editForm.logo_url} onChange={e => setEditForm({...editForm, logo_url: e.target.value})} className="h-8 text-xs" />
+                </div>
+              </div>
+            </div>
+            <div>
+              <Label>Tagline / Description</Label>
+              <Textarea className="mt-1 resize-none" rows={3} placeholder="A short tagline or description for your business" value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})} />
+            </div>
+            <Button onClick={saveEdit} disabled={isSaving} className="w-full bg-gradient-cta shadow-glow">
+              {isSaving ? "Saving..." : "Save changes"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 };

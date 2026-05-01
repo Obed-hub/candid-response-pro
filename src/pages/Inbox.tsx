@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Search } from "lucide-react";
+import { Search, Mic } from "lucide-react";
 
 const STATUSES = ["All","New","In Review","Resolved","Archived"];
 const CATEGORIES = ["All","Complaint","Suggestion","Review","Testimonial","Bug Report","Service Experience","Delivery Experience","Product Feedback","Other"];
@@ -69,7 +69,10 @@ const Inbox = () => {
                     {f.is_anonymous ? "?" : (f.customer_name?.[0] ?? "?")}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{f.message}</div>
+                    <div className="text-sm font-medium truncate flex items-center gap-2">
+                      {f.message}
+                      {f.audio_url && <Mic className="w-3.5 h-3.5 text-primary shrink-0" />}
+                    </div>
                     <div className="text-xs text-muted-foreground mt-0.5">
                       {f.is_anonymous ? "Anonymous" : (f.customer_name ?? "Customer")} · {f.businesses?.business_name} · {f.category ?? "Other"} · {new Date(f.created_at).toLocaleDateString()}
                     </div>

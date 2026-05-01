@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppShell } from "@/components/AppShell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,11 +9,12 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { MessageSquare, Copy } from "lucide-react";
+import { MessageSquare, Copy, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 const WidgetPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [businesses, setBusinesses] = useState<any[]>([]);
   const [selected, setSelected] = useState("");
   const [w, setW] = useState<any>(null);
@@ -37,7 +39,15 @@ const WidgetPage = () => {
   const save = async () => {
     if (!w) return;
     const { error } = await supabase.from("widget_settings").update({
-      widget_title: w.widget_title, button_text: w.button_text, position: w.position, theme: w.theme, is_enabled: w.is_enabled,
+      widget_title: w.widget_title, 
+      button_text: w.button_text, 
+      position: w.position, 
+      theme: w.theme, 
+      is_enabled: w.is_enabled,
+      exit_intent_enabled: w.exit_intent_enabled,
+      exit_intent_message: w.exit_intent_message,
+      delay_seconds: w.delay_seconds,
+      scroll_percent: w.scroll_percent,
     }).eq("id", w.id);
     if (error) { toast.error(error.message); return; }
     toast.success("Widget saved!");
@@ -45,6 +55,7 @@ const WidgetPage = () => {
 
   const biz = businesses.find((b) => b.id === selected);
   const embed = biz ? `<script async src="${window.location.origin}/widget.js" data-feedback-pro="${biz.feedback_slug}"></script>` : "";
+  const communityEmbed = biz ? `<script async src="${window.location.origin}/widget.js" data-feedback-pro="${biz.feedback_slug}" data-mode="community"></script>` : "";
 
   return (
     <AppShell>
@@ -91,6 +102,17 @@ const WidgetPage = () => {
                     </Select>
                   </div>
                 </div>
+
+                <div className="pt-4 border-t border-border space-y-4 text-center p-4 bg-secondary/20 rounded-xl">
+                  <Zap className="w-5 h-5 mx-auto text-primary" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold">Automate your widget</p>
+                    <p className="text-[11px] text-muted-foreground">Setup Exit Intent, Scroll depth, and behavior-based triggers.</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full text-xs" onClick={() => navigate("/triggers")}>
+                    Manage Smart Triggers →
+                  </Button>
+                </div>
                 <Button onClick={save} className="bg-gradient-cta shadow-glow">Save widget settings</Button>
 
                 <div className="pt-4 border-t border-border">
@@ -116,6 +138,23 @@ const WidgetPage = () => {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-3">Title shown in form: <b className="text-foreground">{w.widget_title}</b></p>
+                
+                <div className="mt-10 pt-6 border-t border-border">
+                  <h3 className="text-lg font-bold mb-2">Community Roadmap Widget</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Embed your public roadmap and feedback board so users can see what you're working on and upvote their favorite ideas.
+                  </p>
+                  <div className="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30 mb-4">
+                    <Label className="block mb-2 text-blue-800 dark:text-blue-300">Community Embed Code</Label>
+                    <div className="flex gap-2">
+                      <code className="block flex-1 text-[11px] bg-white dark:bg-black/20 p-3 rounded-md break-all border border-blue-200/50">{communityEmbed}</code>
+                      <Button size="icon" variant="outline" className="border-blue-200" onClick={()=>{navigator.clipboard.writeText(communityEmbed); toast.success("Copied!");}}><Copy className="w-4 h-4" /></Button>
+                    </div>
+                  </div>
+                  <Button variant="link" className="p-0 h-auto text-blue-600" onClick={() => window.open(`${window.location.origin}/community/${biz?.feedback_slug}`, '_blank')}>
+                    View your public board →
+                  </Button>
+                </div>
               </Card>
             </div>
           )}

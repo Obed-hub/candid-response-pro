@@ -2,7 +2,9 @@
   const script = document.currentScript;
   const slug = script.getAttribute('data-userpov') || script.getAttribute('data-feedback-pro');
   const mode = script.getAttribute('data-mode') || 'feedback'; // 'feedback' or 'community'
-  const baseUrl = 'https://userpov.online';
+  const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? window.location.origin 
+    : 'https://userpov.online';
 
   if (!slug) {
     console.error('userpov: Missing data-userpov attribute (business slug).');

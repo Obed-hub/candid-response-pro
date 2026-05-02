@@ -96,8 +96,8 @@ const Landing = () => {
               <Button asChild size="lg" className="bg-gradient-cta shadow-glow">
                 <Link to="/signup">Start collecting feedback <ArrowRight className="w-4 h-4 ml-1" /></Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
-                <a href="#mockup">View demo</a>
+              <Button size="lg" variant="outline" onClick={() => (window as any).toggleUserPOVWidget?.(true)}>
+                View live roadmap
               </Button>
             </div>
 
@@ -178,7 +178,7 @@ const Landing = () => {
               </ul>
             </div>
             <div className="w-full text-center">
-              <Button className="w-full h-12 text-md font-bold">Deploy Widget</Button>
+              <Button className="w-full h-12 text-md font-bold" onClick={() => (window as any).toggleUserPOVWidget?.(true)}>Live Roadmap Demo</Button>
               <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-widest font-bold">Includes 2-way communication</p>
             </div>
           </div>

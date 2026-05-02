@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ShieldCheck, Zap, Sparkles } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Zap, Sparkles, MessageSquare } from "lucide-react";
 
 const Pricing = () => {
   const [signupCount, setSignupCount] = useState(4942);

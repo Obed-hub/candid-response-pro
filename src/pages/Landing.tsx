@@ -97,7 +97,7 @@ const Landing = () => {
                 <Link to="/signup">Start collecting feedback <ArrowRight className="w-4 h-4 ml-1" /></Link>
               </Button>
               <Button size="lg" variant="outline" onClick={() => (window as any).toggleUserPOVWidget?.(true)}>
-                View live roadmap
+                Talk with Us
               </Button>
             </div>
 
@@ -209,7 +209,9 @@ const Landing = () => {
               </ul>
             </div>
             <div className="w-full text-center">
-              <Button variant="outline" className="w-full h-12 text-md font-bold border-primary text-primary hover:bg-primary/5">Print QR Code</Button>
+              <Button asChild variant="outline" className="w-full h-12 text-md font-bold border-primary text-primary hover:bg-primary/5">
+                <Link to="/signup">Print QR Code</Link>
+              </Button>
               <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-widest font-bold">Includes 2-way communication</p>
             </div>
           </div>
@@ -416,7 +418,7 @@ const Landing = () => {
                 <div className="text-xs text-muted-foreground mb-2">Website feedback widget</div>
                 <div className="rounded-lg border border-border bg-secondary/40 p-4 relative h-32">
                   <div className="absolute bottom-3 right-3 bg-gradient-cta text-primary-foreground text-xs font-semibold px-3 py-2 rounded-full shadow-glow flex items-center gap-1.5">
-                    <MessageSquare className="w-3.5 h-3.5" /> Feedback
+                    <MessageSquare className="w-3.5 h-3.5" /> Send a Message
                   </div>
                 </div>
                 <p className="mt-3 text-xs text-muted-foreground">Embed in 1 line on any site.</p>

@@ -90,11 +90,11 @@
   // Create UI
   const btn = document.createElement('button');
   btn.className = 'fb-pro-widget-btn';
-  const btnText = mode === 'community' ? 'Public Roadmap' : 'Send Feedback';
+  const buttonText = mode === 'community' ? 'Community Roadmap' : 'Send a Message';
   const btnIcon = mode === 'community' 
     ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`
     : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`;
-  btn.innerHTML = `${btnIcon} ${btnText}`;
+  btn.innerHTML = `${btnIcon} ${buttonText}`;
   document.body.appendChild(btn);
 
   const container = document.createElement('div');

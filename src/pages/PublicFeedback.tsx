@@ -8,15 +8,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Star, ShieldCheck, Download, MessageSquareReply, CheckCircle, Mail, BellRing,  ChevronDown, X, Camera, Mic, Trash2, Send, Sparkles, MessageSquare, ArrowLeft, Info } from "lucide-react";
+import { Star, ShieldCheck, Download, MessageSquareReply, CheckCircle, Mail, BellRing,  ChevronDown, X, Camera, Mic, Trash2, Send, Sparkles, MessageSquare, ArrowLeft, Info, Smartphone, Share } from "lucide-react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { GiphyFetch } from "@giphy/js-fetch-api";
 import { Gif } from "@giphy/react-components";
 import Turnstile from "react-turnstile";
 import { SEO } from "@/components/SEO";
+import { Link } from "react-router-dom";
 
-const CATEGORIES = ["Complaint","Suggestion","Review","Testimonial","Bug Report","Service Experience","Delivery Experience","Product Feedback","Other"];
+const CATEGORIES = ["Share an Idea", "Report an Issue", "Leave a Review", "Ask a Question", "Talk to the Team", "Report a Bug"];
 
 const schema = z.object({
   message: z.string().trim().min(3, "Please share a bit more").max(2000),
@@ -28,10 +29,12 @@ const schema = z.object({
 const gf = new GiphyFetch("YCVN4A5HiJoIPeHmevssRWu9biqT54bJ");
 
 const CATEGORY_SUGGESTIONS: Record<string, string[]> = {
-  Review: ["Everything was perfect! 🌟", "Great experience", "Fast and easy", "Friendly support"],
-  Complaint: ["Pricing is too high 💰", "Too confusing", "Missing features", "Technical bug"],
-  Suggestion: ["Add a free trial", "More payment options", "Better mobile view", "Dark mode please!"],
-  Question: ["Is there a discount?", "How do I start?", "Support hours?", "Trial period?"],
+  "Leave a Review": ["Everything was perfect! 🌟", "Great experience", "Fast and easy", "Friendly support"],
+  "Report an Issue": ["Pricing is too high 💰", "Too confusing", "Missing features", "Technical bug"],
+  "Share an Idea": ["Add a free trial", "More payment options", "Better mobile view", "Dark mode please!"],
+  "Ask a Question": ["Is there a discount?", "How do I start?", "Support hours?", "Trial period?"],
+  "Talk to the Team": ["I'd like to chat", "Can someone call me?", "General inquiry", "Partnership"],
+  "Report a Bug": ["App crashed", "Button not working", "Slow performance", "Visual glitch"],
   Pricing: ["Pricing is too high 💰", "Need a monthly plan", "Is there a free trial?", "Too expensive for me"]
 };
 
@@ -488,63 +491,80 @@ const PublicFeedback = () => {
           
           {step === 0 ? (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex flex-col items-center text-center mb-8 mt-2">
-                {biz.logo_url ? (
-                  <img src={biz.logo_url} alt={biz.business_name} className="w-16 h-16 rounded-2xl object-cover shadow-md mb-4" />
-                ) : (
-                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl mb-4">💬</div>
+              <div className="flex items-center justify-between gap-3 mb-8">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-bold leading-tight">We're Listening</h1>
+                    <p className="text-sm text-muted-foreground">How can we help you today?</p>
+                  </div>
+                </div>
+                {isEmbed && (
+                  <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={() => window.parent.postMessage("close-widget", "*")}>
+                    Cancel
+                  </Button>
                 )}
-                <h1 className="text-xl font-bold tracking-tight">What do you want to share?</h1>
-                <p className="text-muted-foreground text-sm mt-1">Help us improve by choosing an option below.</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { id: "Review", label: "Review", emoji: "⭐", sub: "Rate us", color: "hover:border-warning/50 hover:bg-warning/5 text-warning" },
-                  { id: "Complaint", label: "Complaint", emoji: "😠", sub: "Report issue", color: "hover:border-destructive/50 hover:bg-destructive/5 text-destructive" },
-                  { id: "Suggestion", label: "Suggestion", emoji: "💡", sub: "Share idea", color: "hover:border-blue-500/50 hover:bg-blue-500/5 text-blue-500" },
-                  { id: "Question", label: "Question", emoji: "❓", sub: "Get help", color: "hover:border-purple-500/50 hover:bg-purple-500/5 text-purple-500" },
-                ].map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
+              <div className="grid grid-cols-1 gap-3 w-full">
+                {CATEGORIES.map((cat) => (
+                  <Button 
+                    key={cat}
+                    variant="outline" 
+                    className="h-auto py-4 px-6 justify-between text-left hover:border-primary/50 hover:bg-primary/5 transition-all group rounded-2xl border-border/50"
                     onClick={() => {
-                      setForm({ ...form, category: opt.id });
+                      setForm({ ...form, category: cat });
                       setStep(1);
                       handleFormInteract();
                       // Dynamic relatable GIF
                       const query = 
-                        opt.id === "Complaint" ? "upset funny" :
-                        opt.id === "Suggestion" ? "thinking funny" :
-                        opt.id === "Bug Report" ? "detective funny" :
-                        opt.id === "Question" ? "thinking funny" : "happy funny";
-                      (window as any).refreshFeedbackGif(query, "stickers");
+                        cat === "Report a Bug" ? "detective funny" :
+                        cat === "Ask a Question" ? "thinking funny" : 
+                        cat === "Report an Issue" ? "upset funny" : "happy funny";
+                      (window as any).refreshFeedbackGif?.(query, "stickers");
                     }}
-                    className={`p-4 rounded-2xl border border-border text-left transition-all group ${opt.color}`}
                   >
-                    <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">{opt.emoji}</div>
-                    <div className="font-bold text-foreground">{opt.label}</div>
-                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">{opt.sub}</div>
-                  </button>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-bold text-foreground group-hover:text-primary transition-colors">{cat}</span>
+                      <span className="text-[11px] text-muted-foreground font-medium">
+                        {cat === "Share an Idea" && "Feature requests & suggestions"}
+                        {cat === "Report an Issue" && "Let us know what's wrong"}
+                        {cat === "Leave a Review" && "Share your experience with us"}
+                        {cat === "Ask a Question" && "We'll get back to you soon"}
+                        {cat === "Talk to the Team" && "Send a direct message"}
+                        {cat === "Report a Bug" && "Technical issues & errors"}
+                      </span>
+                    </div>
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                      <ChevronDown className="w-4 h-4 -rotate-90" />
+                    </div>
+                  </Button>
                 ))}
               </div>
-              
-              {isEmbed && (
-                <Button type="button" variant="ghost" size="sm" className="absolute top-4 right-4" onClick={() => window.parent.postMessage("close-widget", "*")}>
-                  <X className="w-4 h-4" />
-                </Button>
-              )}
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-3 mb-6 animate-in fade-in slide-in-from-left-4">
-                <Button type="button" variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setStep(0)}>
-                  <ArrowLeft className="w-4 h-4" />
-                </Button>
-                <div>
-                  <h2 className="font-bold text-lg leading-none">{form.category}</h2>
-                  <p className="text-xs text-muted-foreground mt-1">Sharing with {biz.business_name}</p>
+              <div className="flex items-center justify-between gap-3 mb-6 animate-in fade-in slide-in-from-left-4">
+                <div className="flex items-center gap-3">
+                  <Button type="button" variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setStep(0)}>
+                    <ArrowLeft className="w-4 h-4" />
+                  </Button>
+                  <div>
+                    <h2 className="font-bold text-lg leading-none">{form.category}</h2>
+                    <p className="text-xs text-muted-foreground mt-1">Sharing with {biz.business_name}</p>
+                  </div>
                 </div>
+                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={() => {
+                  if (isEmbed) {
+                    window.parent.postMessage("close-widget", "*");
+                  } else {
+                    setStep(0);
+                  }
+                }}>
+                  Cancel
+                </Button>
               </div>
 
               <div className="flex flex-col items-center text-center mb-6">
@@ -588,42 +608,45 @@ const PublicFeedback = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <Textarea onClick={handleFormInteract} className="resize-none text-base p-4" rows={4} value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} placeholder={
-                      form.category === "Complaint" ? "What went wrong? We're here to listen. 😠" :
-                      form.category === "Suggestion" ? "How can we make things better? 💡" :
-                      form.category === "Question" ? "What can we help you with? ❓" :
-                      "Tell us what went well — or what didn't. 💬"
+                    <Textarea onClick={handleFormInteract} className="resize-none text-base p-4 rounded-2xl" rows={4} value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} placeholder={
+                      form.category === "Report an Issue" ? "What went wrong? We're here to listen. 😠" :
+                      form.category === "Share an Idea" ? "How can we make things better? 💡" :
+                      form.category === "Ask a Question" ? "What can we help you with? ❓" :
+                      "Tell us what's on your mind... 💬"
                     } />
                     
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {(triggerPrompt?.toLowerCase().includes('pricing') || triggerPrompt?.toLowerCase().includes('plan')) 
-                        ? CATEGORY_SUGGESTIONS.Pricing.map((suggestion) => (
-                            <button
-                              key={suggestion}
-                              type="button"
-                              onClick={() => {
-                                setForm({ ...form, message: suggestion });
-                                handleFormInteract();
-                              }}
-                              className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary-foreground hover:bg-primary/20 hover:border-primary/40 transition-all whitespace-nowrap animate-in fade-in zoom-in-50"
-                            >
-                              {suggestion}
-                            </button>
-                          ))
-                        : CATEGORY_SUGGESTIONS[form.category]?.map((suggestion) => (
-                            <button
-                              key={suggestion}
-                              type="button"
-                              onClick={() => {
-                                setForm({ ...form, message: suggestion });
-                                handleFormInteract();
-                              }}
-                              className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-primary/10 bg-primary/5 text-primary-foreground/70 hover:bg-primary/10 hover:border-primary/30 transition-all whitespace-nowrap"
-                            >
-                              {suggestion}
-                            </button>
-                          ))
-                      }
+                    <div className="mt-3">
+                      <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground mb-2 px-1">Quick suggestions</p>
+                      <div className="flex flex-wrap gap-2">
+                        {(triggerPrompt?.toLowerCase().includes('pricing') || triggerPrompt?.toLowerCase().includes('plan')) 
+                          ? CATEGORY_SUGGESTIONS.Pricing.map((suggestion) => (
+                              <button
+                                key={suggestion}
+                                type="button"
+                                onClick={() => {
+                                  setForm({ ...form, message: form.message ? `${form.message} ${suggestion}` : suggestion });
+                                  handleFormInteract();
+                                }}
+                                className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary/40 transition-all whitespace-nowrap animate-in fade-in zoom-in-50"
+                              >
+                                {suggestion}
+                              </button>
+                            ))
+                          : CATEGORY_SUGGESTIONS[form.category]?.map((suggestion) => (
+                              <button
+                                key={suggestion}
+                                type="button"
+                                onClick={() => {
+                                  setForm({ ...form, message: form.message ? `${form.message} ${suggestion}` : suggestion });
+                                  handleFormInteract();
+                                }}
+                                className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-border bg-secondary/50 text-foreground/80 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all whitespace-nowrap"
+                              >
+                                {suggestion}
+                              </button>
+                            ))
+                        }
+                      </div>
                     </div>
                   </div>
 

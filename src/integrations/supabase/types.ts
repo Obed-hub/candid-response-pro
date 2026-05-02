@@ -16,134 +16,182 @@ export type Database = {
     Tables: {
       businesses: {
         Row: {
+          app_installs: number | null
           business_name: string
           business_type: string | null
           created_at: string
           description: string | null
           feedback_slug: string
+          form_started: number | null
           id: string
           is_public: boolean
           logo_url: string | null
           owner_id: string
+          page_views: number | null
           physical_address: string | null
           website_url: string | null
-          page_views: number
-          form_started: number
-          app_installs: number
         }
         Insert: {
+          app_installs?: number | null
           business_name: string
           business_type?: string | null
           created_at?: string
           description?: string | null
           feedback_slug: string
+          form_started?: number | null
           id?: string
           is_public?: boolean
           logo_url?: string | null
           owner_id: string
+          page_views?: number | null
           physical_address?: string | null
           website_url?: string | null
-          page_views?: number
-          form_started?: number
-          app_installs?: number
         }
         Update: {
+          app_installs?: number | null
           business_name?: string
           business_type?: string | null
           created_at?: string
           description?: string | null
           feedback_slug?: string
+          form_started?: number | null
           id?: string
           is_public?: boolean
           logo_url?: string | null
           owner_id?: string
+          page_views?: number | null
           physical_address?: string | null
           website_url?: string | null
-          page_views?: number
-          form_started?: number
-          app_installs?: number
         }
         Relationships: []
       }
       feedback: {
         Row: {
+          audio_url: string | null
           business_id: string
+          business_reply: string | null
           category: string | null
           created_at: string
           customer_email: string | null
           customer_name: string | null
+          guest_session_id: string | null
           id: string
           is_anonymous: boolean
+          is_featured: boolean | null
+          is_public: boolean | null
           message: string
           rating: number | null
+          reply_at: string | null
           sentiment: string | null
+          session_id: string | null
           source: string
           status: string
-          business_reply: string | null
-          guest_session_id: string | null
-          reply_at: string | null
-          audio_url: string | null
-          is_featured: boolean
-          visual_url: string | null
-          is_public: boolean
           trigger_id: string | null
           trigger_type: string | null
-          session_id: string | null
-          upvotes_count: number
+          upvotes_count: number | null
+          visual_url: string | null
         }
         Insert: {
+          audio_url?: string | null
           business_id: string
+          business_reply?: string | null
           category?: string | null
           created_at?: string
           customer_email?: string | null
           customer_name?: string | null
+          guest_session_id?: string | null
           id?: string
           is_anonymous?: boolean
+          is_featured?: boolean | null
+          is_public?: boolean | null
           message: string
           rating?: number | null
+          reply_at?: string | null
           sentiment?: string | null
+          session_id?: string | null
           source?: string
           status?: string
-          business_reply?: string | null
-          guest_session_id?: string | null
-          reply_at?: string | null
-          audio_url?: string | null
-          is_featured?: boolean
-          visual_url?: string | null
-          is_public?: boolean
           trigger_id?: string | null
           trigger_type?: string | null
-          session_id?: string | null
-          upvotes_count?: number
+          upvotes_count?: number | null
+          visual_url?: string | null
         }
         Update: {
+          audio_url?: string | null
           business_id?: string
+          business_reply?: string | null
           category?: string | null
           created_at?: string
           customer_email?: string | null
           customer_name?: string | null
+          guest_session_id?: string | null
           id?: string
           is_anonymous?: boolean
+          is_featured?: boolean | null
+          is_public?: boolean | null
           message?: string
           rating?: number | null
+          reply_at?: string | null
           sentiment?: string | null
+          session_id?: string | null
           source?: string
           status?: string
-          business_reply?: string | null
-          guest_session_id?: string | null
-          reply_at?: string | null
-          audio_url?: string | null
-          is_featured?: boolean
-          visual_url?: string | null
-          is_public?: boolean
           trigger_id?: string | null
           trigger_type?: string | null
-          session_id?: string | null
-          upvotes_count?: number
+          upvotes_count?: number | null
+          visual_url?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "feedback_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_trigger_id_fkey"
+            columns: ["trigger_id"]
+            isOneToOne: false
+            referencedRelation: "smart_triggers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          metadata: Json | null
+          title: string
+          type: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          metadata?: Json | null
+          title: string
+          type: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          metadata?: Json | null
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
@@ -207,6 +255,56 @@ export type Database = {
           },
         ]
       }
+      smart_triggers: {
+        Row: {
+          action_type: string
+          business_id: string
+          conditions: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          is_enabled: boolean
+          prompt_text: string | null
+          trigger_name: string
+          trigger_type: string
+          updated_at: string
+        }
+        Insert: {
+          action_type?: string
+          business_id: string
+          conditions?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_enabled?: boolean
+          prompt_text?: string | null
+          trigger_name: string
+          trigger_type: string
+          updated_at?: string
+        }
+        Update: {
+          action_type?: string
+          business_id?: string
+          conditions?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_enabled?: boolean
+          prompt_text?: string | null
+          trigger_name?: string
+          trigger_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "smart_triggers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           created_at: string
@@ -234,45 +332,93 @@ export type Database = {
         }
         Relationships: []
       }
+      trigger_events: {
+        Row: {
+          business_id: string
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          page_url: string | null
+          session_id: string | null
+          trigger_id: string | null
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          page_url?: string | null
+          session_id?: string | null
+          trigger_id?: string | null
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          page_url?: string | null
+          session_id?: string | null
+          trigger_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trigger_events_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trigger_events_trigger_id_fkey"
+            columns: ["trigger_id"]
+            isOneToOne: false
+            referencedRelation: "smart_triggers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       widget_settings: {
         Row: {
           business_id: string
           button_text: string
           created_at: string
+          delay_seconds: number | null
+          exit_intent_enabled: boolean | null
           id: string
           is_enabled: boolean
           position: string
+          scroll_percent: number | null
           theme: string
           widget_title: string
-          exit_intent_enabled: boolean
-          delay_seconds: number
-          scroll_percent: number
         }
         Insert: {
           business_id: string
           button_text?: string
           created_at?: string
+          delay_seconds?: number | null
+          exit_intent_enabled?: boolean | null
           id?: string
           is_enabled?: boolean
           position?: string
+          scroll_percent?: number | null
           theme?: string
           widget_title?: string
-          exit_intent_enabled?: boolean
-          delay_seconds?: number
-          scroll_percent?: number
         }
         Update: {
           business_id?: string
           button_text?: string
           created_at?: string
+          delay_seconds?: number | null
+          exit_intent_enabled?: boolean | null
           id?: string
           is_enabled?: boolean
           position?: string
+          scroll_percent?: number | null
           theme?: string
           widget_title?: string
-          exit_intent_enabled?: boolean
-          delay_seconds?: number
-          scroll_percent?: number
         }
         Relationships: [
           {
@@ -289,7 +435,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      initialize_business_triggers: {
+        Args: { p_business_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

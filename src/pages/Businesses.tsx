@@ -20,6 +20,8 @@ const Businesses = () => {
   const [editing, setEditing] = useState<any>(null);
   const [editForm, setEditForm] = useState({ business_name: "", description: "", logo_url: "" });
   const [isSaving, setIsSaving] = useState(false);
+  const [deleting, setDeleting] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     (async () => {

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Feedback Pro design system — clean, premium SaaS. White, soft blue, green, light gray. No purple. */
+/* userpov design system - clean, premium bee-themed SaaS. White, honey yellow, charcoal, soft gray. */
 
 @layer base {
   :root {
@@ -15,10 +15,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 25% 12%;
 
-    /* Soft trustworthy blue */
-    --primary: 217 91% 55%;
-    --primary-foreground: 0 0% 100%;
-    --primary-soft: 217 100% 96%;
+    /* Honey Bee Yellow/Gold */
+    --primary: 43 100% 50%;
+    --primary-foreground: 222 25% 12%;
+    --primary-soft: 43 100% 96%;
 
     /* Fresh green accent */
     --success: 152 60% 42%;
@@ -48,16 +48,16 @@
 
     --radius: 0.75rem;
 
-    /* Gradients (no purple) */
-    --gradient-hero: linear-gradient(180deg, hsl(217 100% 98%) 0%, hsl(0 0% 100%) 100%);
-    --gradient-soft: linear-gradient(135deg, hsl(217 100% 97%) 0%, hsl(152 60% 96%) 100%);
-    --gradient-cta: linear-gradient(135deg, hsl(217 91% 55%) 0%, hsl(217 91% 48%) 100%);
+    /* Gradients (Bee Style) */
+    --gradient-hero: linear-gradient(180deg, hsl(43 100% 98%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-soft: linear-gradient(135deg, hsl(43 100% 97%) 0%, hsl(152 60% 96%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 100% 45%) 100%);
 
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 hsl(222 25% 12% / 0.04);
     --shadow-md: 0 4px 12px -2px hsl(222 25% 12% / 0.06), 0 2px 4px -2px hsl(222 25% 12% / 0.04);
     --shadow-lg: 0 12px 32px -8px hsl(222 25% 12% / 0.08), 0 4px 8px -4px hsl(222 25% 12% / 0.04);
-    --shadow-glow: 0 8px 24px -8px hsl(217 91% 55% / 0.35);
+    --shadow-glow: 0 8px 24px -8px hsl(43 100% 50% / 0.35);
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 25% 20%;
@@ -76,8 +76,8 @@
     --card-foreground: 210 40% 98%;
     --popover: 222 25% 10%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 43 100% 60%;
+    --primary-foreground: 222 25% 12%;
     --secondary: 217 30% 16%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 30% 16%;

@@ -21,24 +21,30 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
       manifest: {
-        name: "Candid Response Pro",
-        short_name: "Feedback",
-        description: "Collect Honest Customer Feedback",
-        theme_color: "#ffffff",
+        name: "userpov — Get the Point Of View",
+        short_name: "userpov",
+        description: "Understand why your visitors leave without buying.",
+        theme_color: "#FFB800",
         background_color: "#ffffff",
         display: "standalone",
         start_url: "/",
         icons: [
           {
-            src: "/placeholder.svg",
+            src: "/icon.png",
             sizes: "192x192",
-            type: "image/svg+xml",
+            type: "image/png",
           },
           {
-            src: "/placeholder.svg",
+            src: "/icon.png",
             sizes: "512x512",
-            type: "image/svg+xml",
-            purpose: "any maskable"
+            type: "image/png",
+            purpose: "any"
+          },
+          {
+            src: "/icon.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ],
       },

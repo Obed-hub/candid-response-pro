@@ -86,7 +86,7 @@ const Dashboard = () => {
       <AppShell>
         <Card className="p-10 text-center bg-gradient-soft border-border">
           <div className="text-6xl mb-3">🚀</div>
-          <h1 className="text-2xl font-bold">Welcome to Feedback Pro!</h1>
+          <h1 className="text-2xl font-bold">Welcome to userpov!</h1>
           <p className="text-muted-foreground mt-2 max-w-md mx-auto">Create your first feedback space to get a public link, QR code, and website widget.</p>
           <Button asChild className="mt-6 bg-gradient-cta shadow-glow"><Link to="/businesses/new">Create my first business <ArrowRight className="w-4 h-4 ml-1" /></Link></Button>
         </Card>

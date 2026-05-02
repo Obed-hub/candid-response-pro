@@ -72,6 +72,11 @@ const PublicFeedback = () => {
       localStorage.setItem("guest_session_id", sid);
     }
     setSessionId(sid);
+    
+    // Save slug for PWA persistence
+    if (slug) {
+      localStorage.setItem("last_feedback_slug", slug);
+    }
 
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
@@ -328,15 +333,15 @@ const PublicFeedback = () => {
   if (done) return (
     <div className="min-h-screen grid place-items-center bg-gradient-soft p-4 relative overflow-hidden">
       {/* Decorative background blobs */}
-      <div className="fixed top-0 left-0 w-64 h-64 bg-green-400/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="fixed bottom-0 right-0 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
+      <div className="fixed top-0 left-0 w-64 h-64 bg-success/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="fixed bottom-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
       
       <Card className="p-6 sm:p-8 max-w-[420px] w-full animate-fade-in shadow-2xl shadow-green-900/5 border-0 ring-1 ring-black/5 bg-white relative overflow-hidden rounded-[2rem] z-10">
         
         {/* Subtle decorative shapes inside card */}
-        <div className="absolute top-16 left-6 w-1.5 h-1.5 rounded-full bg-green-400 opacity-60" />
-        <div className="absolute top-24 right-10 w-2 h-2 rounded-full bg-yellow-400 opacity-80" />
-        <div className="absolute top-36 right-4 w-1.5 h-1.5 rounded-full bg-blue-400 opacity-60" />
+        <div className="absolute top-16 left-6 w-1.5 h-1.5 rounded-full bg-success opacity-60" />
+        <div className="absolute top-24 right-10 w-2 h-2 rounded-full bg-primary opacity-80" />
+        <div className="absolute top-36 right-4 w-1.5 h-1.5 rounded-full bg-primary/40 opacity-60" />
         
         {doneGif ? (
           <div className="flex justify-center mb-6 rounded-3xl overflow-hidden shadow-sm relative z-10 bg-secondary/20">
@@ -370,7 +375,7 @@ const PublicFeedback = () => {
           </div>
         </div>
         
-        <div className="bg-[#f4f8ff] border border-blue-100 rounded-3xl p-5 mb-8 relative z-10">
+        <div className="bg-primary/5 border border-primary/10 rounded-3xl p-5 mb-8 relative z-10">
           {/* Phone Illustration background */}
           <div className="absolute -right-6 top-8 w-28 h-56 bg-gray-900 rounded-[2rem] border-[6px] border-gray-900 shadow-2xl hidden sm:block">
              <div className="bg-gray-100 w-full h-full p-2 pt-6 relative rounded-t-[1.5rem]">
@@ -391,23 +396,23 @@ const PublicFeedback = () => {
           <div className="relative z-10 w-full sm:w-[70%] text-left">
             <div className="flex gap-3 items-center mb-3">
               <div className="bg-white p-2.5 rounded-full shadow-sm">
-                <BellRing className="w-6 h-6 text-blue-600 fill-blue-50" />
+                <BellRing className="w-6 h-6 text-primary fill-primary/10" />
               </div>
-              <h3 className="font-bold text-blue-600 text-lg">Get your reply!</h3>
+              <h3 className="font-bold text-primary text-lg">Get your reply!</h3>
             </div>
             <p className="text-[13px] text-gray-700 leading-relaxed font-medium mb-5">
-              Install this app to your Home Screen to get instantly notified when {biz.business_name} responds to your feedback.
+              Add this app to your Home Screen to get instantly notified when {biz.business_name} responds to your feedback.
             </p>
             
             {deferredPrompt ? (
-              <Button onClick={handleInstallClick} className="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md rounded-2xl h-12">
-                <Download className="w-5 h-5" /> Install App
+              <Button onClick={handleInstallClick} className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-md rounded-2xl h-12">
+                <Download className="w-5 h-5" /> Add to Home Screen
               </Button>
             ) : (
-              <div className="bg-white border border-blue-100/50 rounded-2xl p-3 flex items-start gap-3 shadow-sm">
-                <Smartphone className="w-6 h-6 text-blue-500 shrink-0 mt-0.5" />
+              <div className="bg-white border border-primary/20 rounded-2xl p-3 flex items-start gap-3 shadow-sm">
+                <Smartphone className="w-6 h-6 text-primary shrink-0 mt-0.5" />
                 <div className="text-[11px] text-gray-700 leading-[1.6]">
-                  <span className="font-bold text-gray-900">iOS / Safari:</span> Tap the Share <Share className="inline w-3.5 h-3.5 text-blue-600 mb-0.5 mx-0.5" /> icon, then select <span className="text-blue-600 font-bold">Add to Home Screen.</span>
+                  <span className="font-bold text-gray-900">iOS / Safari:</span> Tap the Share <Share className="inline w-3.5 h-3.5 text-primary mb-0.5 mx-0.5" /> icon, then select <span className="text-primary font-bold">Add to Home Screen.</span>
                 </div>
               </div>
             )}
@@ -431,8 +436,8 @@ const PublicFeedback = () => {
         
         {deferredPrompt && (
           <div className="bg-white/80 backdrop-blur-sm p-3 rounded-xl border shadow-sm flex items-center justify-between animate-in slide-in-from-top-4">
-            <div className="text-sm font-medium">Keep tracking your feedback</div>
-            <Button size="sm" onClick={handleInstallClick} className="gap-2"><Download className="w-3.5 h-3.5" /> Install App</Button>
+            <div className="text-sm font-medium">Get notified when we reply</div>
+            <Button size="sm" onClick={handleInstallClick} className="gap-2"><Download className="w-3.5 h-3.5" /> Add to Home Screen</Button>
           </div>
         )}
 
@@ -652,7 +657,7 @@ const PublicFeedback = () => {
                   {/* Turnstile Verification */}
                   <div className="flex justify-center py-2 scale-90 sm:scale-100 origin-center transition-all">
                     <Turnstile
-                      sitekey="0x4AAAAAADFoPD3AWx1rw0yT"
+                      sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAADFoPD3AWx1rw0yT"}
                       onVerify={(token) => setTurnstileToken(token)}
                       theme="light"
                     />

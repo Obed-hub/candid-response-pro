@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 
 const useCases = [
   { icon: Utensils, title: "Restaurants", desc: "QR codes on tables — rate food, service, and waiting time." },
@@ -43,12 +45,37 @@ const features = [
 ];
 
 const Landing = () => {
+  const navigate = useNavigate();
+  const { session, loading: authLoading } = useAuth();
+
+  const [signupCount, setSignupCount] = useState(4942);
+
+  useEffect(() => {
+    // PWA Smart Redirect: If launched from home screen, return to last visited feedback page
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const lastSlug = localStorage.getItem("last_feedback_slug");
+
+    // Only redirect if standalone, has a slug, and is NOT logged in as a business owner
+    if (!authLoading && !session && isStandalone && lastSlug) {
+      navigate(`/feedback/${lastSlug}`, { replace: true });
+    }
+
+    // Simulated real-time signup counter
+    const interval = setInterval(() => {
+      setSignupCount(prev => {
+        if (prev >= 4998) return prev;
+        return prev + (Math.random() > 0.7 ? 1 : 0);
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [navigate, session, authLoading]);
   return (
     <div className="min-h-screen bg-background">
-      <SEO 
-        title="Feedback Pro - Collect Customer Feedback Online & In-Store" 
-        description="Your customers have feedback but you’re not hearing it. That’s why they don’t come back. Feedback Pro helps you listen and grow with honest feedback via QR codes and widgets."
-        keywords="feedback, customer reviews, qr code feedback, website widget, anonymous feedback, roadmap, business reviews"
+      <SEO
+        title="userpov - Understand Why Your Visitors Leave"
+        description="98% of your visitors leave without buying. userpov helps you capture their honest feedback via exit-intent triggers and website widgets before they're gone forever."
+        keywords="feedback, user intent, exit intent, visitor abandonment, customer reviews, website widget, anonymous feedback, user pov"
       />
       <SiteHeader />
 
@@ -60,10 +87,10 @@ const Landing = () => {
               <Sparkles className="w-3.5 h-3.5" /> For physical stores & online platforms
             </span>
             <h1 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">
-              Your customers & users have feedback — <span className="text-primary">but you’re not hearing it.</span>
+              98% of your visitors leave silently — <span className="text-primary">get the userpov 🐝</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl">
-              That’s why they don’t come back. Feedback Pro gives your customers a voice through QR codes and website widgets, so you can fix issues before they lose interest.
+              They don't buy, they don't sign up, and they don't tell you why. userpov captures the real reason they're leaving via smart exit-intent triggers, so you can fix your funnel fast.
             </p>
             <div className="flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-gradient-cta shadow-glow">
@@ -73,13 +100,31 @@ const Landing = () => {
                 <a href="#mockup">View demo</a>
               </Button>
             </div>
+
+            {/* REAL-TIME COUNTER */}
+            <div className="pt-2">
+              <div className="flex items-center justify-between text-sm mb-2">
+                <span className="font-bold text-foreground">🔥 {signupCount.toLocaleString()} / 5,000 spots claimed</span>
+                <span className="text-primary font-bold animate-pulse">{5000 - signupCount} spots left!</span>
+              </div>
+              <div className="h-2 w-full bg-primary/10 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-cta transition-all duration-1000 ease-out"
+                  style={{ width: `${(signupCount / 5000) * 100}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-2 font-medium">
+                IMPORTANT: The 3-month free trial ends when the first 50 people sign up. No credit card required.
+              </p>
+            </div>
+
             <div className="flex items-center gap-6 pt-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-success" /> Free forever plan</div>
+              <div className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-success" /> 3 Month Free Trial</div>
               <div className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-success" /> No credit card</div>
             </div>
           </div>
           <div className="relative">
-            <img src={heroImg} alt="Feedback Pro dashboard, in-store QR code, and mobile feedback form" width={1536} height={1024} className="w-full rounded-2xl shadow-elegant border border-border" />
+            <img src={heroImg} alt="userpov dashboard, in-store QR code, and mobile feedback form" width={1536} height={1024} className="w-full rounded-2xl shadow-elegant border border-border" />
             <div className="hidden md:flex absolute -left-6 top-10 bg-card rounded-xl shadow-card border border-border p-3 gap-2 items-center animate-float">
               <span className="text-2xl">🎉</span>
               <div className="text-xs">
@@ -98,27 +143,102 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* PROBLEM */}
-      <section className="container py-20">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <span className="text-4xl">😶</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-3">Most customers leave without saying what went wrong</h2>
-          <p className="text-muted-foreground mt-4 text-lg">
-            Many businesses lose customers because customers don't always complain directly. They leave silently, post bad reviews elsewhere, or simply never return.
-          </p>
+      {/* T-SHAPE CHOICE SECTION */}
+      <section className="container py-24">
+        <div className="text-center mb-16 max-w-2xl mx-auto">
+          <Badge variant="secondary" className="mb-4 bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">Two Paths, One Goal</Badge>
+          <h2 className="text-4xl font-bold tracking-tight mb-4">How do you collect your userPOV?</h2>
+          <p className="text-muted-foreground text-lg">Whether you live in the cloud or on the high street, we've got you covered.</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-5">
-          {[
-            { emoji: "😬", icon: Frown, title: "Customers avoid awkward complaints", desc: "Talking to a manager face-to-face feels uncomfortable, so most just leave quietly." },
-            { emoji: "🕵️", icon: AlertTriangle, title: "Store owners miss hidden problems", desc: "You only hear about issues after they're already on Google or social media." },
-            { emoji: "📉", icon: Meh, title: "Online businesses don't know why users leave", desc: "Cart abandonment and silent churn — without ever knowing the real reason." },
-          ].map((c) => (
-            <Card key={c.title} className="p-6 border-border hover:shadow-card transition-shadow">
-              <div className="text-3xl mb-3">{c.emoji}</div>
-              <h3 className="font-semibold text-lg mb-2">{c.title}</h3>
-              <p className="text-muted-foreground text-sm">{c.desc}</p>
-            </Card>
-          ))}
+
+        <div className="grid md:grid-cols-2 gap-0 rounded-[2.5rem] overflow-hidden border border-border shadow-2xl">
+          {/* DIGITAL SIDE */}
+          <div className="p-8 md:p-16 bg-white flex flex-col items-start justify-between border-b md:border-b-0 md:border-r border-border hover:bg-slate-50/50 transition-colors group">
+            <div>
+              <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Globe2 className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-3xl font-bold mb-4">Online & Digital</h3>
+              <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
+                For SaaS, E-commerce, and Content creators. Catch visitors before they bounce.
+              </p>
+              <ul className="space-y-4 mb-10">
+                {[
+                  { icon: Zap, text: "Exit-Intent Triggers" },
+                  { icon: Code2, text: "Embeddable Widget" },
+                  { icon: Activity, text: "Scroll & Time Triggers" }
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm font-medium">
+                    <div className="w-6 h-6 rounded-full bg-success/10 flex items-center justify-center">
+                      <item.icon className="w-3.5 h-3.5 text-success" />
+                    </div>
+                    {item.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="w-full text-center">
+              <Button className="w-full h-12 text-md font-bold">Deploy Widget</Button>
+              <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-widest font-bold">Includes 2-way communication</p>
+            </div>
+          </div>
+
+          {/* PHYSICAL SIDE */}
+          <div className="p-8 md:p-16 bg-slate-50/30 flex flex-col items-start justify-between hover:bg-white transition-colors group">
+            <div>
+              <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <QrCode className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-3xl font-bold mb-4">Physical & Local</h3>
+              <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
+                For Restaurants, Retail, and Salons. Collect feedback at the moment of truth.
+              </p>
+              <ul className="space-y-4 mb-10">
+                {[
+                  { icon: QrCode, text: "Instant QR Generation" },
+                  { icon: Building2, text: "Table & Counter Stands" },
+                  { icon: Star, text: "Private Google Review Guard" }
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm font-medium">
+                    <div className="w-6 h-6 rounded-full bg-success/10 flex items-center justify-center">
+                      <item.icon className="w-3.5 h-3.5 text-success" />
+                    </div>
+                    {item.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="w-full text-center">
+              <Button variant="outline" className="w-full h-12 text-md font-bold border-primary text-primary hover:bg-primary/5">Print QR Code</Button>
+              <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-widest font-bold">Includes 2-way communication</p>
+            </div>
+          </div>
+        </div>
+
+        {/* TWO WAY COMM CONNECTOR (The bottom of the T) */}
+        <div className="max-w-4xl mx-auto mt-12 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-8 rounded-3xl border border-primary/10 text-center animate-pulse-slow">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                <div className="w-10 h-10 rounded-full border-2 border-white bg-slate-200" />
+                <div className="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-[10px] font-bold text-white">YOU</div>
+              </div>
+              <div className="h-[2px] w-12 bg-primary/20 relative">
+                <div className="absolute top-1/2 -translate-y-1/2 right-0 w-2 h-2 rounded-full bg-primary" />
+              </div>
+              <div className="w-10 h-10 rounded-full bg-success flex items-center justify-center text-white">
+                <MessageSquare className="w-5 h-5" />
+              </div>
+              <div className="h-[2px] w-12 bg-primary/20 relative">
+                <div className="absolute top-1/2 -translate-y-1/2 left-0 w-2 h-2 rounded-full bg-primary" />
+              </div>
+              <div className="w-10 h-10 rounded-full border-2 border-white bg-slate-200" />
+            </div>
+            <div className="text-left">
+              <h4 className="font-bold text-lg">Two-Way Communication</h4>
+              <p className="text-sm text-muted-foreground">Don't just listen. Reply, resolve, and turn critics into fans instantly.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -162,7 +282,7 @@ const Landing = () => {
                   <div className="w-3 h-3 rounded-full bg-red-500/50" />
                   <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
                   <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                  <div className="ml-4 text-[10px] text-zinc-500 font-mono">community.feedback.pro/your-brand</div>
+                  <div className="ml-4 text-[10px] text-zinc-500 font-mono">roadmap.userpov.online/your-brand</div>
                 </div>
                 <div className="space-y-3">
                   {[
@@ -238,8 +358,8 @@ const Landing = () => {
       {/* PRODUCT MOCKUP */}
       <section id="mockup" className="container py-20">
         <div className="max-w-2xl mx-auto text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold">A complete toolkit for customer feedback</h2>
-          <p className="text-muted-foreground mt-3 text-lg">Dashboard, QR generator, widget, and a beautiful public form — all included.</p>
+          <h2 className="text-3xl md:text-4xl font-bold">A complete toolkit for visitor insights</h2>
+          <p className="text-muted-foreground mt-3 text-lg">Dashboard, exit-intent triggers, abandonment forms, and beautiful public boards — all included.</p>
         </div>
         <div className="rounded-3xl border border-border bg-gradient-soft p-6 md:p-10">
           <div className="grid lg:grid-cols-3 gap-5">
@@ -277,7 +397,7 @@ const Landing = () => {
                       <div className="text-sm font-medium truncate">{f.msg}</div>
                       <div className="text-xs text-muted-foreground">{f.name} · {f.tag}</div>
                     </div>
-                    <div className="flex text-warning text-sm">{"★".repeat(f.r)}<span className="text-muted-foreground">{"★".repeat(5-f.r)}</span></div>
+                    <div className="flex text-warning text-sm">{"★".repeat(f.r)}<span className="text-muted-foreground">{"★".repeat(5 - f.r)}</span></div>
                   </div>
                 ))}
               </div>
@@ -338,7 +458,7 @@ const Landing = () => {
             <span className="w-3 h-3 rounded-full bg-destructive/70"></span>
             <span className="w-3 h-3 rounded-full bg-warning/70"></span>
             <span className="w-3 h-3 rounded-full bg-success/70"></span>
-            <span className="ml-3 text-xs text-muted-foreground">app.feedback.pro/dashboard</span>
+            <span className="ml-3 text-xs text-muted-foreground">app.userpov.online/dashboard</span>
           </div>
           <div className="p-6 grid lg:grid-cols-4 gap-5">
             <div className="space-y-3 lg:col-span-1">
@@ -391,36 +511,45 @@ const Landing = () => {
       <section className="bg-secondary/30 py-20" id="pricing">
         <div className="container">
           <div className="max-w-2xl mx-auto text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold">Simple pricing for every business</h2>
-            <p className="text-muted-foreground mt-3 text-lg">Start free. Upgrade when you grow.</p>
+            <h2 className="text-3xl md:text-4xl font-bold">The only plan you'll ever need</h2>
+            <p className="text-muted-foreground mt-3 text-lg">Full access. Zero fees for 3 months. No credit card required.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
-            {[
-              { name: "Free", price: "$0", desc: "Perfect to get started", features: ["1 feedback space","50 submissions / month","Shareable feedback link","Basic dashboard"], cta: "Start free", featured: false },
-              { name: "Pro", price: "$19", desc: "For growing businesses", features: ["Unlimited feedback","QR code generator","Website widget","Feedback categories","Export feedback","Email notifications","Custom branding"], cta: "Upgrade to Pro", featured: true },
-              { name: "Business", price: "$49", desc: "For multi-location teams", features: ["Multiple business locations","Team members","Advanced analytics","Priority support","API access (coming)","White-label (coming)"], cta: "Talk to sales", featured: false },
-            ].map((p) => (
-              <Card key={p.name} className={`p-6 relative ${p.featured ? "border-primary shadow-glow" : "border-border"}`}>
-                {p.featured && <span className="absolute -top-3 right-6 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</span>}
-                <h3 className="font-bold text-lg">{p.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{p.desc}</p>
-                <div className="mt-4 flex items-end gap-1">
-                  <span className="text-4xl font-bold">{p.price}</span>
-                  <span className="text-muted-foreground text-sm mb-1">/month</span>
+          <div className="max-w-2xl mx-auto">
+            <Card className="p-8 md:p-10 border-primary shadow-glow relative overflow-hidden bg-white/80 backdrop-blur-sm">
+              <div className="absolute top-0 right-0 px-4 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-bl-xl">
+                3 MONTHS FREE
+              </div>
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                <div className="flex-1 space-y-4">
+                  <h3 className="text-2xl font-bold">Full Access Plan</h3>
+                  <ul className="space-y-2.5">
+                    {[
+                      "Unlimited feedback spaces",
+                      "Exit-intent Smart Triggers",
+                      "AI Sentiment Detection",
+                      "QR Code Generator",
+                      "Website Widget",
+                      "Priority Support"
+                    ].map((f) => (
+                      <li key={f} className="flex items-center gap-2 text-sm font-medium">
+                        <CheckCircle2 className="w-4 h-4 text-success" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <Button asChild className={`w-full mt-5 ${p.featured ? "bg-gradient-cta shadow-glow" : ""}`} variant={p.featured ? "default" : "outline"}>
-                  <Link to="/signup">{p.cta}</Link>
-                </Button>
-                <ul className="mt-6 space-y-2.5">
-                  {p.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="w-4 h-4 text-success mt-0.5 shrink-0" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            ))}
+                <div className="text-center md:border-l border-border md:pl-8 min-w-[200px]">
+                  <div className="text-4xl font-black text-foreground">$0</div>
+                  <div className="text-muted-foreground text-sm font-medium">for 3 months</div>
+                  <Button asChild className="w-full mt-6 bg-gradient-cta shadow-glow">
+                    <Link to="/signup">Start Free Trial</Link>
+                  </Button>
+                  <p className="text-[10px] text-muted-foreground mt-3 italic">
+                    Trial ends after first 50 signups
+                  </p>
+                </div>
+              </div>
+            </Card>
           </div>
         </div>
       </section>
@@ -428,12 +557,11 @@ const Landing = () => {
       {/* FINAL CTA */}
       <section className="container py-20">
         <div className="rounded-3xl bg-gradient-cta text-primary-foreground p-10 md:p-16 text-center shadow-elegant relative overflow-hidden">
-          <div className="text-5xl mb-3">👂✨</div>
-          <h2 className="text-3xl md:text-5xl font-bold max-w-3xl mx-auto leading-tight">
-            Start listening to the customers you never hear from
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">
+            Start listening to the visitors you never hear from
           </h2>
           <p className="mt-4 text-primary-foreground/90 max-w-xl mx-auto">
-            Set up your first feedback space in under 5 minutes. Free forever, no credit card required.
+            Get the userpov on your site performance today. Free forever, no credit card required.
           </p>
           <Button asChild size="lg" variant="secondary" className="mt-7">
             <Link to="/signup">Create your feedback space <ArrowRight className="w-4 h-4 ml-1" /></Link>

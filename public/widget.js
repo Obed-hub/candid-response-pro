@@ -1,11 +1,11 @@
 (function() {
   const script = document.currentScript;
-  const slug = script.getAttribute('data-feedback-pro');
+  const slug = script.getAttribute('data-userpov') || script.getAttribute('data-feedback-pro');
   const mode = script.getAttribute('data-mode') || 'feedback'; // 'feedback' or 'community'
   const baseUrl = window.location.origin;
 
   if (!slug) {
-    console.error('Feedback Pro: Missing data-feedback-pro attribute (business slug).');
+    console.error('userpov: Missing data-userpov attribute (business slug).');
     return;
   }
 
@@ -203,7 +203,7 @@
     hasTriggered = true;
     localStorage.setItem(sessionKey, Date.now().toString());
 
-    console.log('Feedback Pro: Firing Trigger - ' + trigger.trigger_type);
+    console.log('userpov: Firing Trigger - ' + trigger.trigger_type);
     
     // Log event in database via iframe
     iframe.contentWindow.postMessage({

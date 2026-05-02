@@ -85,6 +85,11 @@ export type Database = {
           audio_url: string | null
           is_featured: boolean
           visual_url: string | null
+          is_public: boolean
+          trigger_id: string | null
+          trigger_type: string | null
+          session_id: string | null
+          upvotes_count: number
         }
         Insert: {
           business_id: string
@@ -105,6 +110,11 @@ export type Database = {
           audio_url?: string | null
           is_featured?: boolean
           visual_url?: string | null
+          is_public?: boolean
+          trigger_id?: string | null
+          trigger_type?: string | null
+          session_id?: string | null
+          upvotes_count?: number
         }
         Update: {
           business_id?: string
@@ -125,6 +135,11 @@ export type Database = {
           audio_url?: string | null
           is_featured?: boolean
           visual_url?: string | null
+          is_public?: boolean
+          trigger_id?: string | null
+          trigger_type?: string | null
+          session_id?: string | null
+          upvotes_count?: number
         }
         Relationships: [
           {

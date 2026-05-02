@@ -54,8 +54,8 @@ const WidgetPage = () => {
   };
 
   const biz = businesses.find((b) => b.id === selected);
-  const embed = biz ? `<script async src="${window.location.origin}/widget.js" data-feedback-pro="${biz.feedback_slug}"></script>` : "";
-  const communityEmbed = biz ? `<script async src="${window.location.origin}/widget.js" data-feedback-pro="${biz.feedback_slug}" data-mode="community"></script>` : "";
+  const embed = biz ? `<script async src="${window.location.origin}/widget.js" data-userpov="${biz.feedback_slug}"></script>` : "";
+  const communityEmbed = biz ? `<script async src="${window.location.origin}/widget.js" data-userpov="${biz.feedback_slug}" data-mode="community"></script>` : "";
 
   return (
     <AppShell>

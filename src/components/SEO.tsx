@@ -8,9 +8,9 @@ interface SEOProps {
   ogType?: string;
 }
 
-export const SEO = ({ title, description, keywords, ogImage, ogType = "website" }: SEOProps) => {
+export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogType = "website" }: SEOProps) => {
   useEffect(() => {
-    document.title = `${title} | Feedback Pro`;
+    document.title = `${title} | userpov`;
 
     if (description) {
       let metaDescription = document.querySelector('meta[name="description"]');

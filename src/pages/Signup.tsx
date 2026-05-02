@@ -55,7 +55,7 @@ const Signup = () => {
           <h2 className="text-3xl font-bold">Hear your customers — finally.</h2>
           <p className="text-muted-foreground">Set up your feedback space in minutes. Anonymous by default. Loved by 1,000+ small businesses.</p>
         </div>
-        <p className="text-xs text-muted-foreground">© Feedback Pro</p>
+        <p className="text-xs text-muted-foreground">© userpov</p>
       </div>
       <div className="flex items-center justify-center p-6 md:p-10">
         <Card className="w-full max-w-md p-8 border-border shadow-card">

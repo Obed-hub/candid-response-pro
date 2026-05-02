@@ -318,7 +318,7 @@ const CommunityPage = () => {
         )}
 
         <div className="mt-16 text-center pb-8">
-          <p className="text-[10px] text-muted-foreground mb-4 uppercase tracking-widest">Powered by Feedback Pro</p>
+          <p className="text-[10px] text-muted-foreground mb-4 uppercase tracking-widest">Powered by userpov</p>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-900 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm text-[11px] font-medium">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>

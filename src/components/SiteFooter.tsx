@@ -6,7 +6,7 @@ export const SiteFooter = () => (
       <div className="space-y-3">
         <Logo />
         <p className="text-sm text-muted-foreground max-w-xs">
-          The honest feedback platform for physical and online businesses.
+          The point-of-view platform to stop silent churn and understand why visitors leave.
         </p>
       </div>
       <div>
@@ -36,8 +36,8 @@ export const SiteFooter = () => (
       </div>
     </div>
     <div className="container py-6 border-t border-border text-xs text-muted-foreground flex justify-between">
-      <span>© {new Date().getFullYear()} Feedback Pro. Built with care.</span>
-      <span>Made for business owners who actually listen 💙</span>
+      <span>© {new Date().getFullYear()} userpov. Built with care.</span>
+      <span>Made for business owners who actually listen 🐝</span>
     </div>
   </footer>
 );

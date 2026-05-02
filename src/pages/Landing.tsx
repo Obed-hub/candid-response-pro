@@ -71,7 +71,7 @@ const Landing = () => {
     return () => clearInterval(interval);
   }, [navigate, session, authLoading]);
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <SEO
         title="userpov - Understand Why Your Visitors Leave"
         description="98% of your visitors leave without buying. userpov helps you capture their honest feedback via exit-intent triggers and website widgets before they're gone forever."
@@ -86,8 +86,8 @@ const Landing = () => {
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-soft text-primary text-xs font-semibold">
               <Sparkles className="w-3.5 h-3.5" /> For physical stores & online platforms
             </span>
-            <h1 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">
-              98% of your visitors leave silently — <span className="text-primary">get the userpov 🐝</span>
+            <h1 className="text-3xl md:text-6xl font-bold leading-[1.1] tracking-tight">
+              98% of your visitors leave silently — <br className="hidden sm:block" /><span className="text-primary">get the userpov 🐝</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl">
               They don't buy, they don't sign up, and they don't tell you why. userpov captures the real reason they're leaving via smart exit-intent triggers, so you can fix your funnel fast.
@@ -103,7 +103,7 @@ const Landing = () => {
 
             {/* REAL-TIME COUNTER */}
             <div className="pt-2">
-              <div className="flex items-center justify-between text-sm mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm mb-2 gap-1">
                 <span className="font-bold text-foreground">🔥 {signupCount.toLocaleString()} / 5,000 spots claimed</span>
                 <span className="text-primary font-bold animate-pulse">{5000 - signupCount} spots left!</span>
               </div>
@@ -276,7 +276,7 @@ const Landing = () => {
                 ))}
               </div>
             </div>
-            <div className="relative">
+            <div className="relative overflow-hidden lg:overflow-visible">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-4 px-2">
                   <div className="w-3 h-3 rounded-full bg-red-500/50" />

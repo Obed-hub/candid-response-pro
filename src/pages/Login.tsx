@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,13 +31,17 @@ const Login = () => {
   };
 
   const google = async () => {
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/dashboard` });
-    if (r.error) toast.error("Google sign-in failed");
-    if (!r.error && !r.redirected) nav("/dashboard");
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) toast.error("Google sign-in failed: " + error.message);
   };
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2 bg-background">
+    <div className="min-h-screen grid md:grid-cols-2 bg-background overflow-x-hidden">
       <div className="hidden md:flex flex-col justify-between bg-gradient-soft p-10">
         <Logo />
         <div className="space-y-4 max-w-md">

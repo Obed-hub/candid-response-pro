@@ -35,7 +35,7 @@ export const SiteFooter = () => (
         </ul>
       </div>
     </div>
-    <div className="container py-6 border-t border-border text-xs text-muted-foreground flex justify-between">
+    <div className="container py-6 border-t border-border text-xs text-muted-foreground flex flex-col sm:flex-row justify-between gap-4 text-center sm:text-left">
       <span>© {new Date().getFullYear()} userpov. Built with care.</span>
       <span>Made for business owners who actually listen 🐝</span>
     </div>

@@ -20,7 +20,7 @@ const Pricing = () => {
   }, []);
 
   return (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen bg-background overflow-x-hidden">
     <SiteHeader />
     <section className="container py-20">
       <div className="max-w-3xl mx-auto text-center mb-16">
@@ -38,7 +38,7 @@ const Pricing = () => {
 
         {/* REAL-TIME COUNTER */}
         <div className="mt-8 max-w-md mx-auto bg-primary/5 p-4 rounded-2xl border border-primary/10">
-          <div className="flex items-center justify-between text-sm mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm mb-2 gap-1 text-left sm:text-center">
             <span className="font-bold">🔥 {signupCount.toLocaleString()} / 5,000 spots claimed</span>
             <span className="text-primary font-bold animate-pulse">{5000 - signupCount} left!</span>
           </div>

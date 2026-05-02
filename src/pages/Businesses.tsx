@@ -5,9 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, ExternalLink, Building2, Copy, Pencil, ImagePlus } from "lucide-react";
+import { Plus, ExternalLink, Building2, Copy, Pencil, ImagePlus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +20,8 @@ const Businesses = () => {
   const [editing, setEditing] = useState<any>(null);
   const [editForm, setEditForm] = useState({ business_name: "", description: "", logo_url: "" });
   const [isSaving, setIsSaving] = useState(false);
+  const [deleting, setDeleting] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -88,6 +91,24 @@ const Businesses = () => {
     setEditing(null);
   };
 
+  const confirmDelete = async () => {
+    if (!deleting) return;
+    setIsDeleting(true);
+    // Best-effort cleanup of related rows (RLS protects others' data)
+    await supabase.from("feedback").delete().eq("business_id", deleting.id);
+    await supabase.from("notifications").delete().eq("business_id", deleting.id);
+    await supabase.from("qr_codes").delete().eq("business_id", deleting.id);
+    await supabase.from("widget_settings").delete().eq("business_id", deleting.id);
+    await supabase.from("smart_triggers").delete().eq("business_id", deleting.id);
+    await supabase.from("trigger_events").delete().eq("business_id", deleting.id);
+    const { error } = await supabase.from("businesses").delete().eq("id", deleting.id);
+    setIsDeleting(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Business deleted");
+    setList(list.filter(b => b.id !== deleting.id));
+    setDeleting(null);
+  };
+
   return (
     <AppShell>
       <div className="flex items-center justify-between mb-8">
@@ -114,6 +135,7 @@ const Businesses = () => {
               <div className="mt-4 flex gap-2">
                 <Button size="sm" variant="outline" className="flex-1" onClick={() => copy(b.feedback_slug)}><Copy className="w-3.5 h-3.5 mr-1" /> Copy link</Button>
                 <Button size="sm" variant="outline" onClick={() => openEdit(b)} title="Edit profile"><Pencil className="w-3.5 h-3.5" /></Button>
+                <Button size="sm" variant="outline" onClick={() => setDeleting(b)} title="Delete business" className="text-destructive hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>
                 <Button size="sm" asChild><a href={`/feedback/${b.feedback_slug}`} target="_blank" rel="noreferrer"><ExternalLink className="w-3.5 h-3.5" /></a></Button>
               </div>
             </Card>
@@ -161,6 +183,23 @@ const Businesses = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deleting} onOpenChange={(v) => !v && !isDeleting && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete "{deleting?.business_name}"?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes the business and all its feedback, notifications, QR codes, widget settings, and triggers. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} disabled={isDeleting} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AppShell>
   );
 };

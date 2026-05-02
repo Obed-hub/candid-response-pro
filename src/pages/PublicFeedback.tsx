@@ -164,12 +164,46 @@ const PublicFeedback = () => {
 
   useEffect(() => {
     if (biz && sessionId) {
+      // Initial fetch
       supabase.from("feedback").select("*").eq("business_id", biz.id).eq("guest_session_id", sessionId).order("created_at", { ascending: false })
         .then(({ data }) => {
-          if (data) setPastFeedback(data);
+          if (data) {
+            setPastFeedback(data);
+          }
         });
+
+      // Real-time subscription for replies
+      const channel = supabase
+        .channel('public-feedback-replies')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'feedback',
+            filter: `guest_session_id=eq.${sessionId}`
+          },
+          (payload) => {
+            const updatedFeedback = payload.new as any;
+            setPastFeedback(prev => {
+              const existing = prev.find(f => f.id === updatedFeedback.id);
+              if (updatedFeedback.business_reply && (!existing || !existing.business_reply)) {
+                toast.success(`New reply from ${biz.business_name}!`, {
+                  icon: <MessageSquareReply className="w-4 h-4 text-primary" />,
+                  duration: 5000,
+                });
+              }
+              return prev.map(f => f.id === updatedFeedback.id ? updatedFeedback : f);
+            });
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
-  }, [biz, sessionId, done]); // reload past feedback when 'done' changes
+  }, [biz, sessionId]);
 
   useEffect(() => {
     let interval: any;
@@ -625,6 +659,9 @@ const PublicFeedback = () => {
                       <div className="space-y-1.5">
                         <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Your Email</Label>
                         <Input id="email" type="email" value={form.customer_email} onChange={(e)=>setForm({...form, customer_email:e.target.value})} placeholder="john@example.com" className="h-11 bg-secondary/20 border-border/50 focus:ring-primary/20" />
+                        <p className="text-[10px] text-muted-foreground mt-1 ml-1 flex items-center gap-1">
+                          <BellRing className="w-3 h-3" /> Get notified when they reply
+                        </p>
                       </div>
                     </div>
                   )}

@@ -74,11 +74,12 @@ const Pricing = () => {
               <ul className="space-y-4">
                 {[
                   "Unlimited feedback spaces",
-                  "AI Smart Triggers (Exit intent, Scroll, Time)",
-                  "Custom Website Widget & QR Generator",
-                  "Team Collaboration & Analytics",
-                  "White-label Branding & Custom Exports",
-                  "Priority Email & Slack Support"
+                   "AI Smart Triggers (Exit intent, Scroll, Time)",
+                   "Custom Website Widget & QR Generator",
+                   "Real-time Customer Notifications",
+                   "Team Collaboration & Analytics",
+                   "White-label Branding & Custom Exports",
+                   "Priority Email & Slack Support"
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-3 font-medium">
                     <CheckCircle2 className="w-5 h-5 text-success shrink-0" />

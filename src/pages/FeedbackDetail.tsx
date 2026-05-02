@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Trash2, Mail, User, Send, Heart, Eye } from "lucide-react";
+import { ArrowLeft, Trash2, Mail, User, Send, Heart, Eye, BellRing } from "lucide-react";
 import { toast } from "sonner";
 
 const STATUSES = ["New","In Review","Planned","In-Progress","Shipped","Resolved","Archived"];
@@ -156,7 +156,9 @@ const FeedbackDetail = () => {
               <Button onClick={sendReply} disabled={replying || !reply.trim()} className="gap-2">
                 <Send className="w-4 h-4" /> {replying ? "Sending..." : "Send Reply"}
               </Button>
-              <p className="text-xs text-muted-foreground">If the user checks back via their App or browser, they will see your reply.</p>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <BellRing className="w-3 h-3 text-primary" /> The customer will receive a real-time notification if they are viewing the page or have added it to their home screen.
+              </p>
             </div>
           )}
         </div>

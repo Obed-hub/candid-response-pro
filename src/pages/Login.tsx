@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Logo } from "@/components/Logo";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 
 const schema = z.object({
   email: z.string().trim().email("Invalid email").max(255),
@@ -19,6 +20,7 @@ const Login = () => {
   const nav = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +68,26 @@ const Login = () => {
           </div>
           <form onSubmit={submit} className="space-y-4">
             <div><Label htmlFor="email">Email</Label><Input id="email" type="email" value={form.email} onChange={(e)=>setForm({...form, email:e.target.value})} placeholder="you@business.com" /></div>
-            <div><Label htmlFor="pw">Password</Label><Input id="pw" type="password" value={form.password} onChange={(e)=>setForm({...form, password:e.target.value})} placeholder="••••••••" /></div>
+            <div className="space-y-1">
+              <Label htmlFor="pw">Password</Label>
+              <div className="relative">
+                <Input 
+                  id="pw" 
+                  type={showPassword ? "text" : "password"} 
+                  value={form.password} 
+                  onChange={(e)=>setForm({...form, password:e.target.value})} 
+                  placeholder="••••••••" 
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
             <Button type="submit" className="w-full bg-gradient-cta shadow-glow" disabled={loading}>{loading ? "Logging in…" : "Log in"}</Button>
           </form>
           <p className="text-sm text-muted-foreground text-center mt-5">

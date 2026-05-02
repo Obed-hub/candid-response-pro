@@ -91,6 +91,24 @@ const Businesses = () => {
     setEditing(null);
   };
 
+  const confirmDelete = async () => {
+    if (!deleting) return;
+    setIsDeleting(true);
+    // Best-effort cleanup of related rows (RLS protects others' data)
+    await supabase.from("feedback").delete().eq("business_id", deleting.id);
+    await supabase.from("notifications").delete().eq("business_id", deleting.id);
+    await supabase.from("qr_codes").delete().eq("business_id", deleting.id);
+    await supabase.from("widget_settings").delete().eq("business_id", deleting.id);
+    await supabase.from("smart_triggers").delete().eq("business_id", deleting.id);
+    await supabase.from("trigger_events").delete().eq("business_id", deleting.id);
+    const { error } = await supabase.from("businesses").delete().eq("id", deleting.id);
+    setIsDeleting(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Business deleted");
+    setList(list.filter(b => b.id !== deleting.id));
+    setDeleting(null);
+  };
+
   return (
     <AppShell>
       <div className="flex items-center justify-between mb-8">

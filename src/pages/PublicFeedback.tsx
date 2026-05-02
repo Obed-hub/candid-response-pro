@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Star, ShieldCheck, Download, MessageSquareReply, CheckCircle, Mail, BellRing, Smartphone, Share, ArrowLeft, MessageSquare, Mic, Square, Trash2, Play, Pause, Camera, X } from "lucide-react";
+import { Star, ShieldCheck, Download, MessageSquareReply, CheckCircle, Mail, BellRing,  ChevronDown, X, Camera, Mic, Trash2, Send, Sparkles, MessageSquare, ArrowLeft, Info } from "lucide-react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { GiphyFetch } from "@giphy/js-fetch-api";
@@ -26,6 +26,14 @@ const schema = z.object({
 
 // Using custom Giphy API key provided by user
 const gf = new GiphyFetch("YCVN4A5HiJoIPeHmevssRWu9biqT54bJ");
+
+const CATEGORY_SUGGESTIONS: Record<string, string[]> = {
+  Review: ["Everything was perfect! 🌟", "Great experience", "Fast and easy", "Friendly support"],
+  Complaint: ["Pricing is too high 💰", "Too confusing", "Missing features", "Technical bug"],
+  Suggestion: ["Add a free trial", "More payment options", "Better mobile view", "Dark mode please!"],
+  Question: ["Is there a discount?", "How do I start?", "Support hours?", "Trial period?"],
+  Pricing: ["Pricing is too high 💰", "Need a monthly plan", "Is there a free trial?", "Too expensive for me"]
+};
 
 const PublicFeedback = () => {
   const { slug } = useParams();
@@ -156,7 +164,7 @@ const PublicFeedback = () => {
         if (triggers) setSmartTriggers(triggers);
         window.parent.postMessage({ 
           type: "init-settings", 
-          settings: { ...settings, smart_triggers: triggers } 
+          settings: { ...(settings || {}), smart_triggers: triggers || [] } 
         }, "*");
       }
     })();
@@ -586,6 +594,37 @@ const PublicFeedback = () => {
                       form.category === "Question" ? "What can we help you with? ❓" :
                       "Tell us what went well — or what didn't. 💬"
                     } />
+                    
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {(triggerPrompt?.toLowerCase().includes('pricing') || triggerPrompt?.toLowerCase().includes('plan')) 
+                        ? CATEGORY_SUGGESTIONS.Pricing.map((suggestion) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              onClick={() => {
+                                setForm({ ...form, message: suggestion });
+                                handleFormInteract();
+                              }}
+                              className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary-foreground hover:bg-primary/20 hover:border-primary/40 transition-all whitespace-nowrap animate-in fade-in zoom-in-50"
+                            >
+                              {suggestion}
+                            </button>
+                          ))
+                        : CATEGORY_SUGGESTIONS[form.category]?.map((suggestion) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              onClick={() => {
+                                setForm({ ...form, message: suggestion });
+                                handleFormInteract();
+                              }}
+                              className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-primary/10 bg-primary/5 text-primary-foreground/70 hover:bg-primary/10 hover:border-primary/30 transition-all whitespace-nowrap"
+                            >
+                              {suggestion}
+                            </button>
+                          ))
+                      }
+                    </div>
                   </div>
 
                   {isEmbed && !visualUrl && (

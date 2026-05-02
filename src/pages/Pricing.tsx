@@ -109,6 +109,29 @@ const Pricing = () => {
             </div>
           </div>
         </Card>
+
+        <div className="mt-12 text-center animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
+          <p className="text-muted-foreground mb-4 font-medium italic">Confused about which plan is right for your business?</p>
+          <Button 
+            variant="outline" 
+            className="rounded-full gap-2 border-primary/20 text-primary hover:bg-primary/5 hover:border-primary/40 px-8 py-6 h-auto text-lg font-bold shadow-sm transition-all hover:scale-105"
+            onClick={() => {
+              (window as any).toggleUserPOVWidget?.(true);
+              // Wait for iframe to be ready and send prompt
+              setTimeout(() => {
+                const iframe = document.querySelector('.fb-pro-iframe-container iframe') as HTMLIFrameElement;
+                if (iframe && iframe.contentWindow) {
+                  iframe.contentWindow.postMessage({ 
+                    type: 'set-prompt', 
+                    message: "Is there anything stopping you from choosing a plan?" 
+                  }, '*');
+                }
+              }, 500);
+            }}
+          >
+            <MessageSquare className="w-5 h-5" /> Talk to Us
+          </Button>
+        </div>
       </div>
 
       <div className="mt-20 max-w-3xl mx-auto">

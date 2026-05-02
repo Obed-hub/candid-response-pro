@@ -2,7 +2,7 @@
   const script = document.currentScript;
   const slug = script.getAttribute('data-userpov') || script.getAttribute('data-feedback-pro');
   const mode = script.getAttribute('data-mode') || 'feedback'; // 'feedback' or 'community'
-  const baseUrl = window.location.origin;
+  const baseUrl = 'https://userpov.online';
 
   if (!slug) {
     console.error('userpov: Missing data-userpov attribute (business slug).');
@@ -17,14 +17,14 @@
       bottom: 24px;
       right: 24px;
       padding: 12px 20px;
-      background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
-      color: #fff;
+      background: #fbbd08; /* Honey Yellow */
+      color: #000;
       border-radius: 50px;
       display: flex;
       align-items: center;
       gap: 8px;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0,114,255,0.3);
+      box-shadow: 0 10px 25px rgba(251, 189, 8, 0.3);
       z-index: 2147483647;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: none;
@@ -32,7 +32,7 @@
       font-weight: 600;
       font-size: 14px;
     }
-    .fb-pro-widget-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0,114,255,0.4); }
+    .fb-pro-widget-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(251, 189, 8, 0.4); }
     
     .fb-pro-iframe-container {
       position: fixed;
@@ -125,8 +125,18 @@
   window.addEventListener('message', function(e) {
     if (e.data === 'close-widget') toggleWidget(false);
     if (e.data === 'start-visual-feedback') startVisualFeedback();
+    if (e.data === 'close-widget') toggleWidget(false);
     if (e.data.type === 'init-settings') {
       settings = e.data.settings;
+      if (settings && settings.button_text && mode !== 'community') {
+        const textNode = btn.childNodes[btn.childNodes.length - 1];
+        if (textNode.nodeType === Node.TEXT_NODE) {
+          textNode.textContent = ' ' + settings.button_text;
+        } else {
+          // If icon is missing or something else, just set text
+          btn.innerHTML = `${btnIcon} ${settings.button_text}`;
+        }
+      }
       initSmartTriggers();
     }
   });
@@ -135,14 +145,16 @@
   function initSmartTriggers() {
     if (!settings || !settings.smart_triggers || hasTriggered) return;
     
-    // Check if already triggered in this session or recently
+    // Check if already triggered recently (short cooldown for testing: 30s)
     const lastTrigger = localStorage.getItem(sessionKey);
-    if (lastTrigger && (Date.now() - parseInt(lastTrigger)) < 86400000) { // 24h cooldown
+    if (lastTrigger && (Date.now() - parseInt(lastTrigger)) < 30000) { 
+      console.log('userpov: Trigger on cooldown (30s)');
       hasTriggered = true;
       return;
     }
 
     const triggers = settings.smart_triggers;
+    console.log('userpov: Initializing triggers', triggers);
     const currentUrl = window.location.href.toLowerCase();
 
     triggers.forEach(trigger => {
@@ -306,4 +318,6 @@
       btn.style.display = 'flex';
     }
   }
+  // Expose toggle globally
+  window.toggleUserPOVWidget = toggleWidget;
 })();

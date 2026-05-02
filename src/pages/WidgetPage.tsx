@@ -12,6 +12,20 @@ import { useAuth } from "@/contexts/AuthContext";
 import { MessageSquare, Copy, Zap } from "lucide-react";
 import { toast } from "sonner";
 
+const BUTTON_TEXT_SUGGESTIONS = [
+  "Send a Message",
+  "Share Your Thoughts",
+  "Talk to Us",
+  "Tell Us What You Think",
+  "Leave a Note",
+  "Start a Conversation",
+  "Send Us a Note",
+  "Talk With Us",
+  "We're Listening",
+  "Let Us Know",
+  "Message the Team"
+];
+
 const WidgetPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -81,7 +95,22 @@ const WidgetPage = () => {
                   <Switch checked={w.is_enabled} onCheckedChange={(v)=>setW({...w, is_enabled:v})} />
                 </div>
                 <div><Label>Widget title</Label><Input value={w.widget_title} onChange={(e)=>setW({...w, widget_title:e.target.value})} /></div>
-                <div><Label>Button text</Label><Input value={w.button_text} onChange={(e)=>setW({...w, button_text:e.target.value})} /></div>
+                <div>
+                  <Label>Button text</Label>
+                  <Input value={w.button_text} onChange={(e)=>setW({...w, button_text:e.target.value})} className="mb-2" />
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {BUTTON_TEXT_SUGGESTIONS.map((text) => (
+                      <button
+                        key={text}
+                        type="button"
+                        onClick={() => setW({...w, button_text: text})}
+                        className={`text-[10px] px-2 py-1 rounded-md border transition-all ${w.button_text === text ? 'bg-primary/10 border-primary text-primary font-bold' : 'bg-secondary/50 border-border text-muted-foreground hover:border-primary/30'}`}
+                      >
+                        {text}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div><Label>Position</Label>
                     <Select value={w.position} onValueChange={(v)=>setW({...w, position:v})}>

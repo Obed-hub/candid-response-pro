@@ -135,6 +135,7 @@ const Businesses = () => {
               <div className="mt-4 flex gap-2">
                 <Button size="sm" variant="outline" className="flex-1" onClick={() => copy(b.feedback_slug)}><Copy className="w-3.5 h-3.5 mr-1" /> Copy link</Button>
                 <Button size="sm" variant="outline" onClick={() => openEdit(b)} title="Edit profile"><Pencil className="w-3.5 h-3.5" /></Button>
+                <Button size="sm" variant="outline" onClick={() => setDeleting(b)} title="Delete business" className="text-destructive hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></Button>
                 <Button size="sm" asChild><a href={`/feedback/${b.feedback_slug}`} target="_blank" rel="noreferrer"><ExternalLink className="w-3.5 h-3.5" /></a></Button>
               </div>
             </Card>

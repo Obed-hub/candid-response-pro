@@ -60,7 +60,7 @@ const Dashboard = () => {
       
       // Run automation checks
       if (ids.length > 0) {
-        supabase.rpc('check_automations', { p_business_ids: ids }).then();
+        (supabase.rpc as any)('check_automations', { p_business_ids: ids }).then(() => {});
       }
 
       setStats({

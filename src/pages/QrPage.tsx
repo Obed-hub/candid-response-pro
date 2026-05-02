@@ -23,7 +23,7 @@ const QrPage = () => {
   }, [user]);
 
   const biz = businesses.find((b) => b.id === selected);
-  const url = biz ? `${window.location.origin}/feedback/${biz.feedback_slug}` : "";
+  const url = biz ? `https://userpov.online/feedback/${biz.feedback_slug}` : "";
   const qrSrc = url ? `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&data=${encodeURIComponent(url)}` : "";
 
   return (

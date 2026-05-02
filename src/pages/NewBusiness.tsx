@@ -50,7 +50,7 @@ const NewBusiness = () => {
     if (error || !data) { setLoading(false); toast.error(error?.message ?? "Failed"); return; }
     // create default widget settings + qr record
     await supabase.from("widget_settings").insert({ business_id: data.id });
-    await supabase.from("qr_codes").insert({ business_id: data.id, qr_url: `${window.location.origin}/feedback/${slug}` });
+    await supabase.from("qr_codes").insert({ business_id: data.id, qr_url: `https://userpov.online/feedback/${slug}` });
     toast.success("Feedback space created! 🎉");
     nav("/businesses");
   };

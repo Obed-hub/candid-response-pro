@@ -54,8 +54,8 @@ const WidgetPage = () => {
   };
 
   const biz = businesses.find((b) => b.id === selected);
-  const embed = biz ? `<script async src="${window.location.origin}/widget.js" data-userpov="${biz.feedback_slug}"></script>` : "";
-  const communityEmbed = biz ? `<script async src="${window.location.origin}/widget.js" data-userpov="${biz.feedback_slug}" data-mode="community"></script>` : "";
+  const embed = biz ? `<script async src="https://userpov.online/widget.js" data-userpov="${biz.feedback_slug}"></script>` : "";
+  const communityEmbed = biz ? `<script async src="https://userpov.online/widget.js" data-userpov="${biz.feedback_slug}" data-mode="community"></script>` : "";
 
   return (
     <AppShell>
@@ -151,7 +151,7 @@ const WidgetPage = () => {
                       <Button size="icon" variant="outline" className="border-blue-200" onClick={()=>{navigator.clipboard.writeText(communityEmbed); toast.success("Copied!");}}><Copy className="w-4 h-4" /></Button>
                     </div>
                   </div>
-                  <Button variant="link" className="p-0 h-auto text-blue-600" onClick={() => window.open(`${window.location.origin}/community/${biz?.feedback_slug}`, '_blank')}>
+                  <Button variant="link" className="p-0 h-auto text-blue-600" onClick={() => window.open(`https://userpov.online/community/${biz?.feedback_slug}`, '_blank')}>
                     View your public board →
                   </Button>
                 </div>

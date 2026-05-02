@@ -29,7 +29,7 @@ const Businesses = () => {
   }, [user]);
 
   const copy = (slug: string) => {
-    navigator.clipboard.writeText(`${window.location.origin}/feedback/${slug}`);
+    navigator.clipboard.writeText(`https://userpov.online/feedback/${slug}`);
     toast.success("Link copied!");
   };
 

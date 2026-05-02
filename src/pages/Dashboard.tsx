@@ -242,7 +242,7 @@ const Dashboard = () => {
               </Card>
               <Card className="p-5 bg-gradient-soft">
                 <h3 className="font-semibold text-sm mb-1">📣 Share your link</h3>
-                <p className="text-xs text-muted-foreground break-all">{window.location.origin}/feedback/{firstBiz.feedback_slug}</p>
+                <p className="text-xs text-muted-foreground break-all">https://userpov.online/feedback/{firstBiz.feedback_slug}</p>
               </Card>
             </>
           )}

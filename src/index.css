@@ -94,10 +94,13 @@
 
 @layer base {
   * { @apply border-border; }
+  html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
   body { 
     @apply bg-background text-foreground antialiased; 
     font-feature-settings: "cv11", "ss01";
-    overflow-x: hidden;
     width: 100%;
   }
   h1, h2, h3, h4 { @apply tracking-tight; }

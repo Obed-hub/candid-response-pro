@@ -38,7 +38,7 @@ const WidgetPage = () => {
 
   const save = async () => {
     if (!w) return;
-    const { error } = await supabase.from("widget_settings").update({
+    const { error } = await (supabase as any).from("widget_settings").update({
       widget_title: w.widget_title, 
       button_text: w.button_text, 
       position: w.position, 

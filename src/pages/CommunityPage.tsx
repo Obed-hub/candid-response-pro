@@ -101,7 +101,7 @@ const CommunityPage = () => {
       localStorage.setItem("fb_session_id", sessionId);
     }
 
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("feedback_upvotes")
       .insert({ feedback_id: feedbackId, session_id: sessionId });
 

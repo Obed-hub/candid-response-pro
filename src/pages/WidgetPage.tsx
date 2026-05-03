@@ -169,26 +169,54 @@ const WidgetPage = () => {
                 <p className="text-xs text-muted-foreground mt-3">Title shown in form: <b className="text-foreground">{w.widget_title}</b></p>
                 
                 <div className="mt-10 pt-6 border-t border-border">
-                  <h3 className="text-lg font-bold mb-2">Community Board</h3>
+                  <h3 className="text-xl font-bold mb-2">Group Roadmap</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     Your public roadmap and feedback board. Share this link with your customers so they can see what you're working on and upvote their favorite ideas.
                   </p>
-                  <div className="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30 mb-4">
-                    <Label className="block mb-2 text-blue-800 dark:text-blue-300">Shareable Link</Label>
-                    <div className="flex gap-2">
-                      <code className="block flex-1 text-[11px] bg-white dark:bg-black/20 p-3 rounded-md break-all border border-blue-200/50">{`${window.location.origin}/community/${biz?.feedback_slug}`}</code>
-                      <Button size="icon" variant="outline" className="border-blue-200" onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}/community/${biz?.feedback_slug}`); toast.success("Link copied!");}}><Copy className="w-4 h-4" /></Button>
+                  
+                  <div className="grid gap-6">
+                    {/* Shareable Link */}
+                    <div className="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                      <Label className="block mb-2 text-blue-800 dark:text-blue-300 font-bold">Public URL</Label>
+                      <p className="text-[11px] text-blue-600/70 dark:text-blue-400/70 mb-2">Best for sharing in emails, social media, or navigation bars.</p>
+                      <div className="flex gap-2">
+                        <code className="block flex-1 text-[11px] bg-white dark:bg-black/20 p-3 rounded-md break-all border border-blue-200/50">{`${window.location.origin}/community/${biz?.feedback_slug}`}</code>
+                        <Button size="icon" variant="outline" className="border-blue-200" onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}/community/${biz?.feedback_slug}`); toast.success("Link copied!");}}><Copy className="w-4 h-4" /></Button>
+                      </div>
+                    </div>
+
+                    {/* Standalone Page Embed */}
+                    <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-xl border border-border">
+                      <Label className="block mb-2 text-foreground font-bold flex items-center gap-2">
+                        <Zap className="w-3 h-3 text-primary" /> Standalone Page Embed
+                      </Label>
+                      <p className="text-[11px] text-muted-foreground mb-2">Embed the roadmap as a <b>full section</b> on your own page (e.g. yourcompany.com/roadmap).</p>
+                      <div className="space-y-3">
+                        <div className="flex gap-2">
+                          <code className="block flex-1 text-[10px] bg-white dark:bg-black/20 p-3 rounded-md break-all border border-border">
+                            {`<div id="userpov-roadmap"></div>\n<script async src="https://userpov.online/widget.js" data-userpov="${biz?.feedback_slug}" data-mode="roadmap"></script>`}
+                          </code>
+                          <Button size="icon" variant="outline" onClick={()=>{
+                            navigator.clipboard.writeText(`<div id="userpov-roadmap"></div>\n<script async src="https://userpov.online/widget.js" data-userpov="${biz?.feedback_slug}" data-mode="roadmap"></script>`);
+                            toast.success("Code copied!");
+                          }}><Copy className="w-4 h-4" /></Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Floating Widget Embed */}
+                    <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-xl border border-border">
+                      <Label className="block mb-2 text-muted-foreground font-bold">Floating Widget Embed</Label>
+                      <p className="text-[11px] text-muted-foreground mb-2">Adds a <b>floating button</b> that opens the roadmap in a popup.</p>
+                      <div className="flex gap-2">
+                        <code className="block flex-1 text-[10px] bg-white dark:bg-black/20 p-3 rounded-md break-all border border-border">{communityEmbed}</code>
+                        <Button size="icon" variant="outline" onClick={()=>{navigator.clipboard.writeText(communityEmbed); toast.success("Copied!");}}><Copy className="w-4 h-4" /></Button>
+                      </div>
                     </div>
                   </div>
-                  <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-xl border border-border mb-4">
-                    <Label className="block mb-2 text-muted-foreground">Embed Widget Code</Label>
-                    <div className="flex gap-2">
-                      <code className="block flex-1 text-[11px] bg-white dark:bg-black/20 p-3 rounded-md break-all border border-border">{communityEmbed}</code>
-                      <Button size="icon" variant="outline" onClick={()=>{navigator.clipboard.writeText(communityEmbed); toast.success("Copied!");}}><Copy className="w-4 h-4" /></Button>
-                    </div>
-                  </div>
-                  <Button variant="link" className="p-0 h-auto text-blue-600" onClick={() => window.open(`${window.location.origin}/community/${biz?.feedback_slug}`, '_blank')}>
-                    View your public board →
+
+                  <Button variant="link" className="p-0 h-auto text-blue-600 mt-6" onClick={() => window.open(`${window.location.origin}/community/${biz?.feedback_slug}`, '_blank')}>
+                    Preview your Group Roadmap →
                   </Button>
                 </div>
               </Card>

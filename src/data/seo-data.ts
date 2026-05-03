@@ -764,7 +764,7 @@ export const seoPages: SEOPageData[] = [
     ],
     features: [
       { name: "Desk QR Stickers", description: "Subtle codes on every desk for instant reporting." },
-      { name: "Community Board", description: "Optionally share anonymous suggestions with other members." },
+      { name: "Group Roadmap", description: "Optionally share anonymous suggestions with other members." },
       { name: "Direct Reply", description: "Message members back to update them on their request." }
     ],
     sampleFeedback: [

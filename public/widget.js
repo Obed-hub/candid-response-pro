@@ -1,7 +1,7 @@
 (function() {
   const script = document.currentScript;
   const slug = script.getAttribute('data-userpov') || script.getAttribute('data-feedback-pro');
-  const mode = script.getAttribute('data-mode') || 'feedback'; // 'feedback' or 'community'
+  const mode = script.getAttribute('data-mode') || 'feedback'; // 'feedback', 'community', or 'roadmap'
   const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? window.location.origin 
     : 'https://userpov.online';
@@ -9,6 +9,33 @@
   if (!slug) {
     console.error('userpov: Missing data-userpov attribute (business slug).');
     return;
+  }
+
+  // Handle Standalone Roadmap Mode
+  if (mode === 'roadmap') {
+    const containerId = script.getAttribute('data-container') || 'userpov-roadmap';
+    const target = document.getElementById(containerId) || document.querySelector('[data-userpov-container]');
+    
+    if (target) {
+      const iframe = document.createElement('iframe');
+      iframe.src = `${baseUrl}/community/${slug}?embed=true`;
+      iframe.style.width = '100%';
+      iframe.style.height = script.getAttribute('data-height') || '800px';
+      iframe.style.border = 'none';
+      iframe.style.borderRadius = '12px';
+      target.appendChild(iframe);
+      
+      // Still listen for messages but don't need UI toggles
+      window.addEventListener('message', function(e) {
+        if (e.data.type === 'init-settings') {
+          settings = e.data.settings;
+          // Roadmap mode doesn't need triggers usually, but we keep the logic just in case
+        }
+      });
+      return; // Stop here, no widget button needed
+    } else {
+      console.warn(`userpov: Container #${containerId} not found. Falling back to widget mode.`);
+    }
   }
 
   // Inject Styles

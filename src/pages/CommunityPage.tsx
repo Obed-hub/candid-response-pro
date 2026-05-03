@@ -152,9 +152,9 @@ const CommunityPage = () => {
   return (
     <div className={`min-h-screen ${isEmbedded ? "bg-transparent" : "bg-[#fafafa] dark:bg-zinc-950"} pb-12`}>
       <SEO 
-        title={`${business.business_name} Community Roadmap`} 
+        title={`${business.business_name} Group Roadmap`} 
         description={`Vote on features and see the future of ${business.business_name}. Join the community and share your feedback.`}
-        keywords={`roadmap, feedback, community, upvote, ${business.business_name}`}
+        keywords={`roadmap, feedback, community, upvote, group roadmap, ${business.business_name}`}
       />
       
       {/* JSON-LD Schema for SEO */}
@@ -163,7 +163,7 @@ const CommunityPage = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            "name": `${business.business_name} Community Roadmap`,
+            "name": `${business.business_name} Group Roadmap`,
             "description": `Public feedback and product roadmap for ${business.business_name}`,
             "url": window.location.href,
             "mainEntity": {
@@ -198,12 +198,17 @@ const CommunityPage = () => {
       )}
 
       <div className={`${isEmbedded ? "px-2" : "max-w-5xl mx-auto px-4"}`}>
-        {!isEmbedded && (
+        {!isEmbedded ? (
           <div className="mb-10 text-center">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Community Roadmap</h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Group Roadmap</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Help us shape the future of <b>{business.business_name}</b> by upvoting your favorite ideas and suggestions.
             </p>
+          </div>
+        ) : (
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold tracking-tight mb-1">Group Roadmap</h2>
+            <p className="text-xs text-muted-foreground">Upvote ideas and see what's coming next.</p>
           </div>
         )}
 

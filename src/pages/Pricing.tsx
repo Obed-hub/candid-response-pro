@@ -34,7 +34,7 @@ const plans = [
       "Priority Private Messaging",
       "Custom Branding",
       "Advanced Analytics & Export",
-      "Public Community Board",
+      "Group Roadmap",
       "Instant Slack/Discord Alerts",
     ],
     cta: "Go Pro",

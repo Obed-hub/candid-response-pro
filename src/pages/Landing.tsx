@@ -32,7 +32,7 @@ const useCases = [
 const features = [
   { icon: EyeOff, title: "Anonymous feedback", desc: "Customers speak freely — name and email are optional." },
   { icon: Globe2, title: "Public feedback page", desc: "Each business gets a beautiful shareable link." },
-  { icon: Users, title: "Public community board", desc: "Let users upvote ideas and see your public roadmap." },
+  { icon: Users, title: "Group Roadmap", desc: "Let users upvote ideas and see your public product roadmap." },
   { icon: Search, title: "SEO optimized", desc: "Your roadmap and feedback are discoverable by search engines." },
   { icon: MessageSquare, title: "2-way communication", desc: "Reply to feedback and close the loop with your customers." },
   { icon: QrCode, title: "QR code generator", desc: "Print, scan, collect. Perfect for physical locations." },

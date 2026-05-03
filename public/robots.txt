@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://userpov.com/sitemap.xml
+Sitemap: https://userpov.online/sitemap.xml

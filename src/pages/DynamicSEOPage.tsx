@@ -38,6 +38,7 @@ export const DynamicSEOPage = () => {
         title={page.metaTitle}
         description={page.metaDescription}
         keywords={`${page.keyword}, feedback, userpov, customer insights`}
+        canonical={`https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`}
       />
       <script type="application/ld+json">
         {JSON.stringify({
@@ -45,11 +46,11 @@ export const DynamicSEOPage = () => {
           "@type": page.type === "location" ? "LocalBusiness" : "Service",
           "name": `UserPOV for ${page.name}`,
           "description": page.metaDescription,
-          "url": `https://userpov.com/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`,
+          "url": `https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`,
           "provider": {
             "@type": "Organization",
             "name": "UserPOV",
-            "url": "https://userpov.com"
+            "url": "https://userpov.online"
           },
           "areaServed": page.type === "location" ? {
             "@type": "City",
@@ -57,7 +58,7 @@ export const DynamicSEOPage = () => {
           } : undefined,
           "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": `https://userpov.com/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`
+            "@id": `https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`
           }
         })}
       </script>

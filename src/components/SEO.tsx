@@ -6,9 +6,10 @@ interface SEOProps {
   keywords?: string;
   ogImage?: string;
   ogType?: string;
+  canonical?: string;
 }
 
-export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogType = "website" }: SEOProps) => {
+export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogType = "website", canonical }: SEOProps) => {
   useEffect(() => {
     document.title = `${title} | userpov`;
 
@@ -36,6 +37,18 @@ export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogTyp
       }
     }
 
+    // Canonical
+    const canonicalUrl = canonical || window.location.origin + window.location.pathname;
+    let linkCanonical = document.querySelector('link[rel="canonical"]');
+    if (linkCanonical) {
+      linkCanonical.setAttribute("href", canonicalUrl);
+    } else {
+      linkCanonical = document.createElement("link");
+      linkCanonical.setAttribute("rel", "canonical");
+      linkCanonical.setAttribute("href", canonicalUrl);
+      document.head.appendChild(linkCanonical);
+    }
+
     // Open Graph
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) ogTitle.setAttribute("content", title);
@@ -55,8 +68,8 @@ export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogTyp
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "UserPOV",
-      "url": "https://userpov.com",
-      "logo": "https://userpov.com/logo.png",
+      "url": "https://userpov.online",
+      "logo": "https://userpov.online/logo.png",
       "description": "Anonymous customer feedback platform for digital and physical businesses.",
       "sameAs": [
         "https://twitter.com/userpov",
@@ -68,10 +81,10 @@ export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogTyp
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "UserPOV",
-      "url": "https://userpov.com",
+      "url": "https://userpov.online",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://userpov.com/search?q={search_term_string}",
+        "target": "https://userpov.online/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     };
@@ -84,25 +97,25 @@ export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogTyp
           "@type": "SiteNavigationElement",
           "position": 1,
           "name": "Group Roadmap",
-          "url": "https://userpov.com/roadmap"
+          "url": "https://userpov.online/roadmap"
         },
         {
           "@type": "SiteNavigationElement",
           "position": 2,
           "name": "Pricing",
-          "url": "https://userpov.com/pricing"
+          "url": "https://userpov.online/pricing"
         },
         {
           "@type": "SiteNavigationElement",
           "position": 3,
           "name": "Industries",
-          "url": "https://userpov.com/industries"
+          "url": "https://userpov.online/industries"
         },
         {
           "@type": "SiteNavigationElement",
           "position": 4,
           "name": "Sign Up",
-          "url": "https://userpov.com/signup"
+          "url": "https://userpov.online/signup"
         }
       ]
     };

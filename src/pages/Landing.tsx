@@ -17,16 +17,16 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 
 const useCases = [
-  { icon: Utensils, title: "Restaurants", desc: "QR codes on tables — rate food, service, and waiting time." },
-  { icon: Scissors, title: "Salons & Spas", desc: "Receipts include a QR — clients rate their stylist privately." },
-  { icon: ShoppingBag, title: "Supermarkets", desc: "Posters at checkout collect honest store experience reviews." },
-  { icon: GraduationCap, title: "Schools", desc: "Anonymous parent and student feedback after events or terms." },
-  { icon: Stethoscope, title: "Clinics", desc: "Patients leave private feedback after appointments." },
-  { icon: Store, title: "Online stores", desc: "Add a widget on product pages to catch checkout & delivery issues." },
-  { icon: Code2, title: "SaaS websites", desc: "Embed the widget so users report bugs without leaving the app." },
-  { icon: Briefcase, title: "Agencies", desc: "Send a feedback link after each project milestone." },
-  { icon: User, title: "Freelancers", desc: "Collect testimonials that double as social proof on your site." },
-  { icon: Church, title: "Churches & events", desc: "QR cards at the door collect anonymous community feedback." },
+  { icon: Utensils, title: "Restaurants", desc: "QR codes on tables — rate food, service, and waiting time.", link: "/industries/restaurants" },
+  { icon: Scissors, title: "Salons & Spas", desc: "Receipts include a QR — clients rate their stylist privately.", link: "/industries/salons" },
+  { icon: ShoppingBag, title: "Supermarkets", desc: "Posters at checkout collect honest store experience reviews.", link: "/industries/supermarkets" },
+  { icon: GraduationCap, title: "Schools", desc: "Anonymous parent and student feedback after events or terms.", link: "/industries/schools" },
+  { icon: Stethoscope, title: "Clinics", desc: "Patients leave private feedback after appointments.", link: "/industries/clinics" },
+  { icon: Store, title: "Online stores", desc: "Add a widget on product pages to catch checkout & delivery issues.", link: "/industries/ecommerce" },
+  { icon: Code2, title: "SaaS websites", desc: "Embed the widget so users report bugs without leaving the app.", link: "/industries/saas" },
+  { icon: Briefcase, title: "Agencies", desc: "Send a feedback link after each project milestone.", link: "/industries/agencies" },
+  { icon: User, title: "Freelancers", desc: "Collect testimonials that double as social proof on your site.", link: "/industries/freelancers" },
+  { icon: Church, title: "Churches & events", desc: "QR cards at the door collect anonymous community feedback.", link: "/industries/events" },
 ];
 
 const features = [
@@ -345,13 +345,15 @@ const Landing = () => {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {useCases.map((u) => (
-              <Card key={u.title} className="p-5 hover:shadow-card hover:-translate-y-0.5 transition-all border-border">
-                <div className="w-10 h-10 rounded-lg bg-success-soft text-success grid place-items-center mb-3">
-                  <u.icon className="w-5 h-5" />
-                </div>
-                <h3 className="font-semibold mb-1">{u.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{u.desc}</p>
-              </Card>
+              <Link key={u.title} to={u.link}>
+                <Card className="h-full p-5 hover:shadow-card hover:-translate-y-0.5 transition-all border-border cursor-pointer group">
+                  <div className="w-10 h-10 rounded-lg bg-success-soft text-success grid place-items-center mb-3 group-hover:scale-110 transition-transform">
+                    <u.icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-semibold mb-1">{u.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{u.desc}</p>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

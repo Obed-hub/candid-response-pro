@@ -17,10 +17,12 @@ import QrPage from "./pages/QrPage";
 import WidgetPage from "./pages/WidgetPage";
 import Settings from "./pages/Settings";
 import Pricing from "./pages/Pricing";
+import AboutUs from "./pages/AboutUs";
 import PublicFeedback from "./pages/PublicFeedback";
 import PublicReputation from "./pages/PublicReputation";
 import CommunityPage from "./pages/CommunityPage";
 import SmartTriggers from "./pages/SmartTriggers";
+import { DynamicSEOPage } from "./pages/DynamicSEOPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,9 +39,15 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/about-us" element={<AboutUs />} />
             <Route path="/feedback/:slug" element={<PublicFeedback />} />
             <Route path="/reputation/:slug" element={<PublicReputation />} />
             <Route path="/community/:slug" element={<CommunityPage />} />
+
+            {/* SEO Programmatic Pages */}
+            <Route path="/industries/:slug" element={<DynamicSEOPage />} />
+            <Route path="/use-cases/:slug" element={<DynamicSEOPage />} />
+            <Route path="/locations/:slug" element={<DynamicSEOPage />} />
 
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/businesses" element={<ProtectedRoute><Businesses /></ProtectedRoute>} />

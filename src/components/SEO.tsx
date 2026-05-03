@@ -51,7 +51,7 @@ export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogTyp
     }
 
     // JSON-LD Schema
-    const schemaData = {
+    const organizationSchema = {
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "UserPOV",
@@ -64,15 +64,59 @@ export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogTyp
       ]
     };
 
-    let script = document.querySelector('script[type="application/ld+json"]');
-    if (script) {
-      script.innerHTML = JSON.stringify(schemaData);
-    } else {
-      script = document.createElement("script");
+    const websiteSchema = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "UserPOV",
+      "url": "https://userpov.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://userpov.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    };
+
+    const navigationSchema = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": [
+        {
+          "@type": "SiteNavigationElement",
+          "position": 1,
+          "name": "Group Roadmap",
+          "url": "https://userpov.com/roadmap"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 2,
+          "name": "Pricing",
+          "url": "https://userpov.com/pricing"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 3,
+          "name": "Industries",
+          "url": "https://userpov.com/industries"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 4,
+          "name": "Sign Up",
+          "url": "https://userpov.com/signup"
+        }
+      ]
+    };
+
+    // Remove old schema scripts
+    document.querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove());
+
+    // Add new schemas
+    [organizationSchema, websiteSchema, navigationSchema].forEach(schema => {
+      const script = document.createElement("script");
       script.setAttribute("type", "application/ld+json");
-      script.innerHTML = JSON.stringify(schemaData);
+      script.innerHTML = JSON.stringify(schema);
       document.head.appendChild(script);
-    }
+    });
 
   }, [title, description, keywords, ogImage, ogType]);
 

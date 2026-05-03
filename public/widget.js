@@ -11,6 +11,18 @@
     return;
   }
 
+  // Prevent recursion if script is loaded inside the widget's own iframe
+  if (window.self !== window.top) return;
+
+  // Prevent loading on the platform's own feedback/community pages to avoid self-embedding loops
+  const path = window.location.pathname;
+  if (path.startsWith('/feedback/') || path.startsWith('/community/')) {
+    // Only allow if it's NOT the base domain or if explicitly allowed (rare)
+    if (window.location.hostname === 'userpov.online' || window.location.hostname === 'localhost') {
+       return;
+    }
+  }
+
   // Handle Standalone Roadmap Mode
   if (mode === 'roadmap') {
     const containerId = script.getAttribute('data-container') || 'userpov-roadmap';
@@ -18,7 +30,7 @@
     
     if (target) {
       const iframe = document.createElement('iframe');
-      iframe.src = `${baseUrl}/community/${slug}?embed=true`;
+      iframe.src = `${baseUrl}/community/${slug}?embed=true&standalone=true`;
       iframe.style.width = '100%';
       iframe.style.height = script.getAttribute('data-height') || '800px';
       iframe.style.border = 'none';
@@ -62,6 +74,7 @@
       font-size: 14px;
     }
     .fb-pro-widget-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(251, 189, 8, 0.4); }
+    .fb-pro-widget-btn span { transition: opacity 0.3s ease; }
     
     .fb-pro-iframe-container {
       position: fixed;
@@ -83,6 +96,29 @@
       border: 1px solid rgba(0,0,0,0.05);
     }
     .fb-pro-iframe-container.open { display: block; opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 480px) {
+      .fb-pro-iframe-container {
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 85vh; /* Don't cover 100% to keep some context */
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+        transform: translateY(100%);
+      }
+      .fb-pro-iframe-container.open {
+        transform: translateY(0);
+      }
+      .fb-pro-widget-btn {
+        bottom: 16px;
+        right: 16px;
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+    }
 
     .fb-pro-visual-overlay {
       position: fixed;
@@ -121,8 +157,25 @@
   const btnIcon = mode === 'community' 
     ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`
     : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`;
-  btn.innerHTML = `${btnIcon} ${buttonText}`;
+  btn.innerHTML = `${btnIcon} <span id="userpov-rotating-text">${buttonText}</span>`;
   document.body.appendChild(btn);
+
+  // Rotating text logic for feedback mode
+  if (mode !== 'community') {
+    const rotationTexts = ['Send a Message', 'Talk to us', 'Feedback', 'Have a suggestion?'];
+    let textIdx = 0;
+    setInterval(() => {
+      const span = document.getElementById('userpov-rotating-text');
+      if (span && !isOpen) {
+        span.style.opacity = '0';
+        setTimeout(() => {
+          textIdx = (textIdx + 1) % rotationTexts.length;
+          span.innerText = rotationTexts[textIdx];
+          span.style.opacity = '1';
+        }, 300);
+      }
+    }, 4000);
+  }
 
   const container = document.createElement('div');
   container.className = 'fb-pro-iframe-container';

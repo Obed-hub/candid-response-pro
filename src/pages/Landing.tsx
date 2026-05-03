@@ -73,9 +73,9 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <SEO
-        title="userpov - Understand Why Your Visitors Leave"
-        description="98% of your visitors leave without buying. userpov helps you capture their honest feedback via exit-intent triggers and website widgets before they're gone forever."
-        keywords="feedback, user intent, exit intent, visitor abandonment, customer reviews, website widget, anonymous feedback, user pov"
+        title="userpov — The best way to understand why your visitors leave"
+        description="Stop losing customers silently. userpov helps you capture honest feedback via smart exit-intent triggers, QR codes, and beautiful roadmaps before they leave forever."
+        keywords="feedback, user intent, exit intent, visitor abandonment, customer reviews, website widget, anonymous feedback, user pov, product roadmap"
       />
       <SiteHeader />
 

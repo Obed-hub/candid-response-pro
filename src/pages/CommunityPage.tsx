@@ -13,6 +13,7 @@ const CommunityPage = () => {
   const { slug } = useParams();
   const [searchParams] = useSearchParams();
   const isEmbedded = searchParams.get("embed") === "true";
+  const isStandalone = searchParams.get("standalone") === "true";
   
   const [business, setBusiness] = useState<any>(null);
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
@@ -150,7 +151,7 @@ const CommunityPage = () => {
   );
 
   return (
-    <div className={`min-h-screen ${isEmbedded ? "bg-transparent" : "bg-[#fafafa] dark:bg-zinc-950"} pb-12`}>
+    <div className={`min-h-screen ${(isEmbedded && !isStandalone) ? "bg-transparent" : "bg-[#fafafa] dark:bg-zinc-950"} pb-12`}>
       <SEO 
         title={`${business.business_name} Group Roadmap`} 
         description={`Vote on features and see the future of ${business.business_name}. Join the community and share your feedback.`}
@@ -180,7 +181,7 @@ const CommunityPage = () => {
         </script>
       )}
 
-      {!isEmbedded && (
+      {(!isEmbedded || isStandalone) && (
         <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50 py-4 px-6 mb-8 shadow-sm">
           <div className="max-w-5xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -197,8 +198,8 @@ const CommunityPage = () => {
         </div>
       )}
 
-      <div className={`${isEmbedded ? "px-2" : "max-w-5xl mx-auto px-4"}`}>
-        {!isEmbedded ? (
+      <div className={`${(isEmbedded && !isStandalone) ? "px-2" : "max-w-5xl mx-auto px-4"}`}>
+        {(!isEmbedded || isStandalone) ? (
           <div className="mb-10 text-center">
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Group Roadmap</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
@@ -243,7 +244,7 @@ const CommunityPage = () => {
             </div>
             <h3 className="text-lg font-semibold mb-1">No feedback found</h3>
             <p className="text-muted-foreground max-w-xs mx-auto">Be the first to share an idea with the community!</p>
-            {!isEmbedded && (
+            {(!isEmbedded || isStandalone) && (
               <Button asChild className="mt-6 bg-gradient-cta shadow-glow">
                 <a href={`/feedback/${slug}`}>Submit feedback</a>
               </Button>

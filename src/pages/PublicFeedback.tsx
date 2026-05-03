@@ -367,6 +367,22 @@ const PublicFeedback = () => {
     }
   };
 
+  const handleCancel = () => {
+    if (isEmbed) {
+      window.parent.postMessage("close-widget", "*");
+    } else {
+      if (step === 1) {
+        setStep(0);
+      } else {
+        if (biz?.website_url) {
+          window.location.href = biz.website_url;
+        } else {
+          window.location.href = "/";
+        }
+      }
+    }
+  };
+
   if (notFound) return (
     <div className="min-h-screen grid place-items-center bg-gradient-soft p-4 text-center">
       <Card className="p-8 max-w-sm w-full"><div className="text-5xl mb-3">🤔</div><h1 className="text-xl font-bold">Feedback space not found</h1><p className="text-muted-foreground text-sm mt-1">The link may be invalid.</p></Card>
@@ -472,12 +488,12 @@ const PublicFeedback = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-soft py-6 px-4 flex flex-col items-center">
+    <div className={`min-h-screen ${isEmbed ? "bg-transparent py-0 px-0" : "bg-gradient-soft py-6 px-4"} flex flex-col items-center`}>
       <SEO 
         title={`Give Feedback to ${biz.business_name}`} 
         description={`Share your thoughts, suggestions or complaints with ${biz.business_name}. Your voice matters!`}
       />
-      <div className="w-full max-w-md mx-auto space-y-6">
+      <div className={`w-full ${isEmbed ? "" : "max-w-md"} mx-auto space-y-6`}>
         
         {deferredPrompt && (
           <div className="bg-white/80 backdrop-blur-sm p-3 rounded-xl border shadow-sm flex items-center justify-between animate-in slide-in-from-top-4">
@@ -486,7 +502,7 @@ const PublicFeedback = () => {
           </div>
         )}
 
-        <Card className="p-6 sm:p-8 shadow-2xl border-0 ring-1 ring-black/5 bg-white overflow-hidden relative">
+        <Card className={`${isEmbed ? "p-4 border-0 shadow-none" : "p-6 sm:p-8 shadow-2xl border-0 ring-1 ring-black/5"} bg-white overflow-hidden relative`}>
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-cta" />
           
           {step === 0 ? (
@@ -501,11 +517,9 @@ const PublicFeedback = () => {
                     <p className="text-sm text-muted-foreground">How can we help you today?</p>
                   </div>
                 </div>
-                {isEmbed && (
-                  <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={() => window.parent.postMessage("close-widget", "*")}>
-                    Cancel
-                  </Button>
-                )}
+                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={handleCancel}>
+                  Cancel
+                </Button>
               </div>
 
               <div className="grid grid-cols-1 gap-3 w-full">
@@ -556,13 +570,7 @@ const PublicFeedback = () => {
                     <p className="text-xs text-muted-foreground mt-1">Sharing with {biz.business_name}</p>
                   </div>
                 </div>
-                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={() => {
-                  if (isEmbed) {
-                    window.parent.postMessage("close-widget", "*");
-                  } else {
-                    setStep(0);
-                  }
-                }}>
+                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={handleCancel}>
                   Cancel
                 </Button>
               </div>

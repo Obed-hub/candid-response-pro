@@ -1,7 +1,18 @@
 (function() {
-  const script = document.currentScript;
+  if (window.__userpov_initialized) return;
+  window.__userpov_initialized = true;
+
+  const script = document.currentScript || (function() {
+    const scripts = document.getElementsByTagName('script');
+    for (let s of scripts) {
+      if (s.getAttribute('data-userpov') || s.getAttribute('data-feedback-pro')) return s;
+    }
+    return scripts[scripts.length - 1];
+  })();
+
   const slug = script.getAttribute('data-userpov') || script.getAttribute('data-feedback-pro');
-  const mode = script.getAttribute('data-mode') || 'feedback'; // 'feedback', 'community', or 'roadmap'
+  const mode = (script.getAttribute('data-mode') || 'feedback').toLowerCase(); 
+  const isStandalone = script.getAttribute('data-standalone') === 'true';
   const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? window.location.origin 
     : 'https://userpov.online';
@@ -141,6 +152,18 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       z-index: 2147483647;
     }
+
+    .fb-pro-backdrop {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(2px);
+      z-index: 2147483645;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .fb-pro-backdrop.open { display: block; opacity: 1; }
   `;
   document.head.appendChild(style);
 
@@ -162,19 +185,27 @@
 
   // Rotating text logic for feedback mode
   if (mode !== 'community') {
-    const rotationTexts = ['Send a Message', 'Talk to us', 'Feedback', 'Have a suggestion?'];
+    const rotationTexts = ['Send a Message', 'Talk to us', 'Feedback', 'Have a suggestion?', 'Questions?'];
     let textIdx = 0;
     setInterval(() => {
       const span = document.getElementById('userpov-rotating-text');
       if (span && !isOpen) {
         span.style.opacity = '0';
+        span.style.transform = 'scale(0.95)';
         setTimeout(() => {
-          textIdx = (textIdx + 1) % rotationTexts.length;
+          // Randomize next text (but different from current)
+          let nextIdx;
+          do {
+            nextIdx = Math.floor(Math.random() * rotationTexts.length);
+          } while (nextIdx === textIdx);
+          textIdx = nextIdx;
+          
           span.innerText = rotationTexts[textIdx];
           span.style.opacity = '1';
+          span.style.transform = 'scale(1)';
         }, 300);
       }
-    }, 4000);
+    }, 5000);
   }
 
   const container = document.createElement('div');
@@ -187,6 +218,12 @@
   iframe.style.height = '100%';
   iframe.style.border = 'none';
   container.appendChild(iframe);
+  
+  const backdrop = document.createElement('div');
+  backdrop.className = 'fb-pro-backdrop';
+  backdrop.onclick = () => toggleWidget(false);
+
+  document.body.appendChild(backdrop);
   document.body.appendChild(container);
 
   // Toggle Function
@@ -194,14 +231,22 @@
     isOpen = forceState !== undefined ? forceState : !isOpen;
     if (isOpen) {
       container.classList.add('open');
+      backdrop.classList.add('open');
       btn.style.display = 'none';
     } else {
       container.classList.remove('open');
+      backdrop.classList.remove('open');
       btn.style.display = 'flex';
     }
   }
 
-  btn.onclick = () => toggleWidget(true);
+  btn.onclick = () => {
+    if (mode === 'community' && isStandalone) {
+      window.open(`${baseUrl}/community/${slug}`, '_blank');
+    } else {
+      toggleWidget(true);
+    }
+  };
 
   // Handle Messages from Iframe
   window.addEventListener('message', function(e) {
@@ -225,12 +270,12 @@
 
   // Smart Triggers Logic
   function initSmartTriggers() {
-    if (!settings || !settings.smart_triggers || hasTriggered) return;
+    if (!settings || !settings.smart_triggers || !Array.isArray(settings.smart_triggers) || hasTriggered) return;
     
-    // Check if already triggered recently (short cooldown for testing: 30s)
+    // Check if already triggered recently (short cooldown: 30s)
     const lastTrigger = localStorage.getItem(sessionKey);
     if (lastTrigger && (Date.now() - parseInt(lastTrigger)) < 30000) { 
-      console.log('userpov: Trigger on cooldown (30s)');
+      console.log('userpov: Trigger on cooldown');
       hasTriggered = true;
       return;
     }
@@ -261,31 +306,40 @@
           break;
 
         case 'exit_intent':
-          const exitHandler = (e) => {
-            if (e.clientY <= 0) {
-              fireTrigger(trigger);
-              document.removeEventListener('mouseleave', exitHandler);
-            }
-          };
-          document.addEventListener('mouseleave', exitHandler);
-          break;
-
         case 'pricing_dropoff':
         case 'checkout_abandonment':
-          const paths = trigger.conditions.url_contains || [];
-          const isTargetPage = paths.some(p => currentUrl.includes(p.toLowerCase()));
+          const paths = trigger.conditions?.url_contains || [];
+          const currentPath = window.location.pathname.toLowerCase();
+          const isTargetPage = trigger.trigger_type === 'exit_intent' || paths.some(p => 
+            currentUrl.includes(p.toLowerCase()) || 
+            currentPath.includes(p.toLowerCase())
+          );
+          
           if (isTargetPage) {
-            // Wait for inactivity or exit intent
-            const targetExitHandler = (e) => {
+            console.log('userpov: Active trigger', trigger.trigger_type);
+            
+            // Desktop: Mouse Leave (Exit Intent)
+            const desktopExitHandler = (e) => {
               if (e.clientY <= 0) {
                 fireTrigger(trigger);
-                document.removeEventListener('mouseleave', targetExitHandler);
+                document.removeEventListener('mouseleave', desktopExitHandler);
               }
             };
-            document.addEventListener('mouseleave', targetExitHandler);
+            document.addEventListener('mouseleave', desktopExitHandler);
             
-            // Or after 60 seconds of being on the target page
-            setTimeout(() => fireTrigger(trigger), 60000);
+            // Mobile: Visibility Change (User switches tabs or goes to home)
+            const mobileExitHandler = () => {
+              if (document.visibilityState === 'hidden') {
+                fireTrigger(trigger);
+                document.removeEventListener('visibilitychange', mobileExitHandler);
+              }
+            };
+            document.addEventListener('visibilitychange', mobileExitHandler);
+
+            // Fallback: Time on Page if they are just idle (only for specialized triggers)
+            if (trigger.trigger_type !== 'exit_intent') {
+              setTimeout(() => fireTrigger(trigger), 60000);
+            }
           }
           break;
       }

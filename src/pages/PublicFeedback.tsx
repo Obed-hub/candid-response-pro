@@ -35,7 +35,8 @@ const CATEGORY_SUGGESTIONS: Record<string, string[]> = {
   "Ask a Question": ["Is there a discount?", "How do I start?", "Support hours?", "Trial period?"],
   "Talk to the Team": ["I'd like to chat", "Can someone call me?", "General inquiry", "Partnership"],
   "Report a Bug": ["App crashed", "Button not working", "Slow performance", "Visual glitch"],
-  Pricing: ["Pricing is too high 💰", "Need a monthly plan", "Is there a free trial?", "Too expensive for me"]
+  Pricing: ["Pricing is too high 💰", "Need a monthly plan", "Is there a free trial?", "Too expensive for me"],
+  ExitIntent: ["Just browsing today", "Couldn't find what I needed", "Pricing is a bit high", "Looking for a specific feature", "Just comparing options"]
 };
 
 const PublicFeedback = () => {
@@ -124,7 +125,15 @@ const PublicFeedback = () => {
       if (e.data.type === "set-prompt") {
         setTriggerPrompt(e.data.message);
         setActiveTrigger({ id: e.data.triggerId, type: e.data.triggerType });
-        setForm(prev => ({ ...prev, category: "Question" }));
+        
+        // If it's an exit-related trigger, set a more proactive category
+        if (e.data.triggerType === 'exit_intent' || e.data.triggerType === 'pricing_dropoff' || e.data.triggerType === 'checkout_abandonment') {
+          setForm(prev => ({ ...prev, category: "Report an Issue", rating: 0 }));
+          // Refresh GIF for exit intent
+          (window as any).refreshFeedbackGif?.("wait stop", "stickers");
+        } else {
+          setForm(prev => ({ ...prev, category: "Ask a Question" }));
+        }
         setStep(1);
       }
       if (e.data.type === "log-trigger-event" && biz) {
@@ -502,8 +511,8 @@ const PublicFeedback = () => {
           </div>
         )}
 
-        <Card className={`${isEmbed ? "p-4 border-0 shadow-none" : "p-6 sm:p-8 shadow-2xl border-0 ring-1 ring-black/5"} bg-white overflow-hidden relative`}>
-          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-cta" />
+        <Card className={`${isEmbed ? "p-3 sm:p-4 border-0 shadow-none" : "p-6 sm:p-8 shadow-2xl border-0 ring-1 ring-black/5"} bg-white overflow-hidden relative`}>
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-cta" />
           
           {step === 0 ? (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -577,9 +586,19 @@ const PublicFeedback = () => {
 
               <div className="flex flex-col items-center text-center mb-6">
                 {triggerPrompt && (
-                  <div className="w-full mb-4 p-4 bg-primary/10 border border-primary/20 rounded-xl animate-in fade-in slide-in-from-top-4">
-                    <p className="text-primary font-bold text-lg leading-tight">“{triggerPrompt}”</p>
-                    <p className="text-xs text-muted-foreground mt-1 uppercase font-bold tracking-widest opacity-70">Question from our team</p>
+                  <div className="w-full mb-4 p-5 bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 rounded-2xl animate-in fade-in slide-in-from-top-4 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 opacity-10">
+                      <Sparkles className="w-12 h-12" />
+                    </div>
+                    <p className="text-primary font-black text-xl leading-tight relative z-10">
+                      {activeTrigger?.type === 'exit_intent' ? "Wait! Before you go..." : "“" + triggerPrompt + "”"}
+                    </p>
+                    {activeTrigger?.type === 'exit_intent' && triggerPrompt && (
+                      <p className="text-primary/80 font-medium text-sm mt-2 relative z-10 italic">
+                        “{triggerPrompt}”
+                      </p>
+                    )}
+                    <p className="text-[10px] text-primary/60 mt-3 uppercase font-bold tracking-[0.2em] opacity-70">Message from the team</p>
                   </div>
                 )}
                 
@@ -626,8 +645,8 @@ const PublicFeedback = () => {
                     <div className="mt-3">
                       <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground mb-2 px-1">Quick suggestions</p>
                       <div className="flex flex-wrap gap-2">
-                        {(triggerPrompt?.toLowerCase().includes('pricing') || triggerPrompt?.toLowerCase().includes('plan')) 
-                          ? CATEGORY_SUGGESTIONS.Pricing.map((suggestion) => (
+                        {(activeTrigger?.type === 'exit_intent' || activeTrigger?.type === 'pricing_dropoff' || activeTrigger?.type === 'checkout_abandonment')
+                          ? CATEGORY_SUGGESTIONS.ExitIntent.map((suggestion) => (
                               <button
                                 key={suggestion}
                                 type="button"
@@ -635,24 +654,38 @@ const PublicFeedback = () => {
                                   setForm({ ...form, message: form.message ? `${form.message} ${suggestion}` : suggestion });
                                   handleFormInteract();
                                 }}
-                                className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary/40 transition-all whitespace-nowrap animate-in fade-in zoom-in-50"
+                                className="text-[11px] font-bold px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all whitespace-nowrap animate-in fade-in zoom-in-50"
                               >
                                 {suggestion}
                               </button>
                             ))
-                          : CATEGORY_SUGGESTIONS[form.category]?.map((suggestion) => (
-                              <button
-                                key={suggestion}
-                                type="button"
-                                onClick={() => {
-                                  setForm({ ...form, message: form.message ? `${form.message} ${suggestion}` : suggestion });
-                                  handleFormInteract();
-                                }}
-                                className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-border bg-secondary/50 text-foreground/80 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all whitespace-nowrap"
-                              >
-                                {suggestion}
-                              </button>
-                            ))
+                          : (triggerPrompt?.toLowerCase().includes('pricing') || triggerPrompt?.toLowerCase().includes('plan')) 
+                            ? CATEGORY_SUGGESTIONS.Pricing.map((suggestion) => (
+                                <button
+                                  key={suggestion}
+                                  type="button"
+                                  onClick={() => {
+                                    setForm({ ...form, message: form.message ? `${form.message} ${suggestion}` : suggestion });
+                                    handleFormInteract();
+                                  }}
+                                  className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:border-primary/40 transition-all whitespace-nowrap"
+                                >
+                                  {suggestion}
+                                </button>
+                              ))
+                            : CATEGORY_SUGGESTIONS[form.category]?.map((suggestion) => (
+                                <button
+                                  key={suggestion}
+                                  type="button"
+                                  onClick={() => {
+                                    setForm({ ...form, message: form.message ? `${form.message} ${suggestion}` : suggestion });
+                                    handleFormInteract();
+                                  }}
+                                  className="text-[11px] font-medium px-3 py-1.5 rounded-full border border-border bg-secondary/50 text-foreground/80 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all whitespace-nowrap"
+                                >
+                                  {suggestion}
+                                </button>
+                              ))
                         }
                       </div>
                     </div>
@@ -778,8 +811,15 @@ const PublicFeedback = () => {
                     )}
                   </Button>
                   
-                  <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground uppercase font-bold tracking-widest pt-2">
-                    <ShieldCheck className="w-3.5 h-3.5" /> Encrypted & Secure Feedback
+                  <div className="flex flex-col items-center justify-center gap-3 pt-2 pb-1">
+                    <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+                      <ShieldCheck className="w-3.5 h-3.5" /> Encrypted & Secure Feedback
+                    </div>
+                    {isEmbed && (
+                      <div className="text-[9px] text-muted-foreground/60 uppercase font-bold tracking-[0.2em] flex items-center gap-1">
+                        Powered by <span className="text-primary/70">UserPOV</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </form>

@@ -149,8 +149,11 @@ const SmartTriggers = () => {
                 />
               </div>
               
-              <p className="text-sm text-muted-foreground mb-6 flex-grow">
-                {trigger.description}
+              <p className="text-sm text-muted-foreground mb-6 flex-grow leading-relaxed">
+                {trigger.trigger_type === 'exit_intent' ? "Intercept users right before they leave your site to understand what stopped them." : 
+                 trigger.trigger_type === 'pricing_dropoff' ? "Detect when users abandon the pricing page to capture objections early." :
+                 trigger.trigger_type === 'checkout_abandonment' ? "Reach out when users leave during checkout to fix friction points." :
+                 trigger.description}
               </p>
 
               <div className="space-y-4 pt-4 border-t border-border/50">

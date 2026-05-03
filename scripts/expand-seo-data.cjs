@@ -74,6 +74,7 @@ function expand() {
 
   const newRecords = [];
   
+  /*
   // Add US Cities
   US_CITIES.forEach(city => {
     if (!content.includes(`slug: "${city.toLowerCase().replace(/\s+/g, '-')}"`)) {
@@ -94,6 +95,7 @@ function expand() {
       newRecords.push(generateLocationRecord(city, 'NG'));
     }
   });
+  */
 
   console.log(`Adding ${newRecords.length} new records...`);
 

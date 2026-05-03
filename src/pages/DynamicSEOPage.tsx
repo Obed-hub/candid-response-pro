@@ -65,7 +65,7 @@ export const DynamicSEOPage = () => {
 
       {/* HERO */}
       <section className="relative bg-gradient-hero overflow-hidden border-b border-border">
-        <div className="container py-16 md:py-24 flex flex-col items-center text-center space-y-6 animate-fade-in">
+        <div className="container py-12 md:py-16 flex flex-col items-center text-center space-y-6 animate-fade-in">
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-soft text-primary text-xs font-semibold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" /> For {page.name}
           </span>
@@ -89,7 +89,7 @@ export const DynamicSEOPage = () => {
       </section>
 
       {/* WHY IT MATTERS (Moved up) */}
-      <section className="bg-zinc-950 text-white py-16 md:py-20">
+      <section className="bg-zinc-950 text-white py-12 md:py-14">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="space-y-8">
@@ -158,12 +158,12 @@ export const DynamicSEOPage = () => {
       </section>
 
       {/* USE CASES */}
-      <section className="container py-16 md:py-20">
+      <section className="container py-12 md:py-14">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">How it works for {page.name}</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Practical scenarios where UserPOV helps you improve.</p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {page.useCases.map((uc, i) => (
             <Card key={i} className="p-8 border-border hover:shadow-card transition-all group border-b-4 border-b-transparent hover:border-b-primary">
               <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -177,7 +177,7 @@ export const DynamicSEOPage = () => {
       </section>
 
       {/* PRODUCT VISUAL BLOCK */}
-      <section className="bg-secondary/20 py-16 md:py-20 border-y border-border">
+      <section className="bg-secondary/20 py-12 md:py-14 border-y border-border">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="relative order-2 lg:order-1">
@@ -217,13 +217,13 @@ export const DynamicSEOPage = () => {
       </section>
 
       {/* SAMPLE FEEDBACK */}
-      <section className="py-16 md:py-20">
+      <section className="py-12 md:py-14">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">What you'll start hearing</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Real examples of the insights our {page.name.toLowerCase()} clients receive.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-5">
             {page.sampleFeedback.map((sf, i) => (
               <Card key={i} className="p-8 border-border shadow-sm italic relative overflow-hidden bg-card/50">
                 <div className="absolute top-4 right-4 text-primary opacity-10">
@@ -243,12 +243,12 @@ export const DynamicSEOPage = () => {
       </section>
 
       {/* FEATURES */}
-      <section className="container py-16 md:py-20 border-t border-border">
+      <section className="container py-12 md:py-14 border-t border-border">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Features for {page.name}</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Everything you need to collect and manage insights effectively.</p>
         </div>
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 gap-5 lg:gap-6">
           {page.features.map((f, i) => (
             <Card key={i} className="p-8 border-border flex gap-6 items-start hover:bg-secondary/10 transition-colors border-l-4 border-l-primary/30">
               <div className="w-10 h-10 bg-primary-soft rounded-xl flex items-center justify-center shrink-0">
@@ -267,7 +267,7 @@ export const DynamicSEOPage = () => {
       </section>
 
       {/* FAQ */}
-      <section className="bg-secondary/10 py-16 md:py-20">
+      <section className="bg-secondary/10 py-12 md:py-14">
         <div className="container">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
@@ -292,7 +292,7 @@ export const DynamicSEOPage = () => {
       </section>
 
       {/* RELATED PAGES / INTERNAL LINKING */}
-      <section className="border-y border-border py-16">
+      <section className="border-y border-border py-10">
         <div className="container">
           <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground mb-8 text-center">Explore More Clusters</h3>
           <div className="flex flex-wrap justify-center gap-3">
@@ -311,7 +311,7 @@ export const DynamicSEOPage = () => {
       </section>
 
       {/* FINAL CTA */}
-      <section className="container py-16 md:py-24">
+      <section className="container py-12 md:py-16">
         <div className="rounded-[2.5rem] bg-gradient-cta text-primary-foreground p-10 md:p-16 text-center shadow-elegant relative overflow-hidden group border border-white/10">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-white/20 transition-all duration-700" />
           <h2 className="text-3xl md:text-6xl font-bold mb-6 tracking-tight">

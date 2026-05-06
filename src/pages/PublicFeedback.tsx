@@ -60,7 +60,9 @@ const PublicFeedback = () => {
   const [smartTriggers, setSmartTriggers] = useState<any[]>([]);
   const [triggerPrompt, setTriggerPrompt] = useState<string | null>(null);
   const [activeTrigger, setActiveTrigger] = useState<{ id: string, type: string } | null>(null);
-  const [step, setStep] = useState(0); // 0: Intent, 1: Form
+  const [step, setStep] = useState(0); // 0: Intent/Emoji, 1: Form
+  const [emojiRating, setEmojiRating] = useState<number | null>(null);
+  const [showEmojiFollowup, setShowEmojiFollowup] = useState(false);
   
   // Analytics
   const [hasStartedForm, setHasStartedForm] = useState(false);
@@ -172,7 +174,12 @@ const PublicFeedback = () => {
       const { data: triggers } = await supabase.from("smart_triggers").select("*").eq("business_id", data.id).eq("is_enabled", true);
       
       if (isEmbed) {
-        if (settings) setWidgetSettings(settings);
+        if (settings) {
+          setWidgetSettings(settings);
+          if (settings.emoji_widget_enabled) {
+            setStep(0); // This will be the emoji step if enabled
+          }
+        }
         if (triggers) setSmartTriggers(triggers);
         window.parent.postMessage({ 
           type: "init-settings", 
@@ -497,12 +504,12 @@ const PublicFeedback = () => {
   );
 
   return (
-    <div className={`min-h-screen ${isEmbed ? "bg-transparent py-0 px-0" : "bg-gradient-soft py-6 px-4"} flex flex-col items-center`}>
+    <div className={`min-h-screen ${isEmbed ? "bg-transparent py-0 px-0" : "bg-gradient-soft py-4 px-3"} flex flex-col items-center`}>
       <SEO 
         title={`Give Feedback to ${biz.business_name}`} 
         description={`Share your thoughts, suggestions or complaints with ${biz.business_name}. Your voice matters!`}
       />
-      <div className={`w-full ${isEmbed ? "" : "max-w-md"} mx-auto space-y-6`}>
+      <div className={`w-full ${isEmbed ? "" : "max-w-[420px]"} mx-auto space-y-4`}>
         
         {deferredPrompt && (
           <div className="bg-white/80 backdrop-blur-sm p-3 rounded-xl border shadow-sm flex items-center justify-between animate-in slide-in-from-top-4">
@@ -511,75 +518,180 @@ const PublicFeedback = () => {
           </div>
         )}
 
-        <Card className={`${isEmbed ? "p-3 sm:p-4 border-0 shadow-none" : "p-6 sm:p-8 shadow-2xl border-0 ring-1 ring-black/5"} bg-white overflow-hidden relative`}>
+        <Card className={`${isEmbed ? "p-3 sm:p-4 border-0 shadow-none" : "p-5 sm:p-6 shadow-2xl border-0 ring-1 ring-black/5"} bg-white overflow-hidden relative`}>
           <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-cta" />
           
           {step === 0 ? (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex items-center justify-between gap-3 mb-8">
-                <div className="flex items-center gap-4 text-left">
-                  <div className="p-3 rounded-2xl bg-primary/10 text-primary">
-                    <Sparkles className="w-6 h-6" />
+              {widgetSettings?.emoji_widget_enabled ? (
+                <div className="text-center py-2">
+                  <div className="flex items-center justify-between mb-4">
+                    <h1 className="text-xl font-black tracking-tight">{widgetSettings.emoji_widget_title || "How was your experience?"}</h1>
+                    {!isEmbed && (
+                      <Button type="button" variant="ghost" size="sm" className="h-8 text-xs" onClick={handleCancel}>Cancel</Button>
+                    )}
                   </div>
-                  <div>
-                    <h1 className="text-xl font-bold leading-tight">We're Listening</h1>
-                    <p className="text-sm text-muted-foreground">How can we help you today?</p>
+                  
+                  <div className="flex justify-between items-center px-2 mb-6">
+                    {[
+                      { v: 1, e: "😡", l: "Hate" },
+                      { v: 2, e: "☹️", l: "Dislike" },
+                      { v: 3, e: "😐", l: "Neutral" },
+                      { v: 4, e: "🙂", l: "Like" },
+                      { v: 5, e: "😍", l: "Love" }
+                    ].map((item) => (
+                      <button 
+                        key={item.v}
+                        onClick={() => {
+                          setEmojiRating(item.v);
+                          setForm({...form, rating: item.v});
+                          setShowEmojiFollowup(true);
+                          handleFormInteract();
+                        }}
+                        className={`group flex flex-col items-center transition-all duration-300 ${emojiRating === item.v ? "scale-125" : "hover:scale-110 opacity-80 hover:opacity-100"}`}
+                      >
+                        <span className={`text-4xl mb-1 filter drop-shadow-sm transition-transform ${emojiRating === item.v ? "animate-bounce" : ""}`}>{item.e}</span>
+                        <span className={`text-[9px] font-bold uppercase tracking-widest ${emojiRating === item.v ? "text-primary" : "text-muted-foreground"}`}>{item.l}</span>
+                      </button>
+                    ))}
                   </div>
-                </div>
-                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              </div>
 
-              <div className="grid grid-cols-1 gap-3 w-full">
+                  {showEmojiFollowup && (
+                    <div className="animate-in fade-in zoom-in-95 duration-300 space-y-4">
+                      <div className="relative">
+                        <Label className="text-sm font-bold mb-2 block text-left text-primary flex items-center gap-2">
+                          <MessageSquare className="w-4 h-4" /> {widgetSettings.emoji_widget_followup || "What could we have done better?"}
+                        </Label>
+                        <Textarea 
+                          className="min-h-[100px] rounded-2xl border-primary/20 focus:border-primary/50 bg-primary/5 p-4 text-sm"
+                          placeholder="Your honest thoughts help us improve..."
+                          value={form.message}
+                          onChange={(e) => setForm({...form, message: e.target.value})}
+                        />
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          className="flex-1 h-12 rounded-2xl bg-gradient-cta font-bold shadow-glow"
+                          onClick={() => setStep(1)}
+                        >
+                          Continue →
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="h-12 rounded-2xl border-dashed"
+                          onClick={() => setStep(0.5)} // Hidden "Standard" mode jump
+                        >
+                          Other Options
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {!showEmojiFollowup && (
+                    <button 
+                      onClick={() => setStep(0.5)}
+                      className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-[0.2em] mt-4"
+                    >
+                      Or report a specific issue →
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between gap-3 mb-6">
+                    <div className="flex items-center gap-4 text-left">
+                      <div className="p-2.5 rounded-2xl bg-primary/10 text-primary">
+                        <Sparkles className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl font-bold leading-tight">We're Listening</h1>
+                        <p className="text-sm text-muted-foreground">How can we help you today?</p>
+                      </div>
+                    </div>
+                    <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={handleCancel}>
+                      Cancel
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2.5 w-full">
+                    {CATEGORIES.map((cat) => (
+                      <Button 
+                        key={cat}
+                        variant="outline" 
+                        className="h-auto py-3 px-4 justify-between text-left hover:border-primary/50 hover:bg-primary/5 transition-all group rounded-xl border-border/40"
+                        onClick={() => {
+                          setForm({ ...form, category: cat });
+                          setStep(1);
+                          handleFormInteract();
+                          const query = 
+                            cat === "Report a Bug" ? "detective funny" :
+                            cat === "Ask a Question" ? "thinking funny" : 
+                            cat === "Report an Issue" ? "upset funny" : "happy funny";
+                          (window as any).refreshFeedbackGif?.(query, "stickers");
+                        }}
+                      >
+                        <div className="flex flex-col gap-0.5">
+                          <span className="font-bold text-sm text-foreground group-hover:text-primary transition-colors">{cat}</span>
+                          <span className="text-[10px] text-muted-foreground font-medium line-clamp-1">
+                            {cat === "Share an Idea" && "Feature requests & suggestions"}
+                            {cat === "Report an Issue" && "Let us know what's wrong"}
+                            {cat === "Leave a Review" && "Share your experience with us"}
+                            {cat === "Ask a Question" && "We'll get back to you soon"}
+                            {cat === "Talk to the Team" && "Send a direct message"}
+                            {cat === "Report a Bug" && "Technical issues & errors"}
+                          </span>
+                        </div>
+                        <div className="w-7 h-7 rounded-full bg-muted/50 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                          <ChevronDown className="w-3.5 h-3.5 -rotate-90" />
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          ) : step === 0.5 ? (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex items-center gap-3 mb-6">
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setStep(0)}>
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+                <h1 className="text-lg font-bold">Standard Feedback</h1>
+              </div>
+              <div className="grid grid-cols-1 gap-2.5 w-full">
                 {CATEGORIES.map((cat) => (
                   <Button 
                     key={cat}
                     variant="outline" 
-                    className="h-auto py-4 px-6 justify-between text-left hover:border-primary/50 hover:bg-primary/5 transition-all group rounded-2xl border-border/50"
+                    className="h-auto py-3 px-4 justify-between text-left hover:border-primary/50 hover:bg-primary/5 transition-all group rounded-xl border-border/40"
                     onClick={() => {
                       setForm({ ...form, category: cat });
                       setStep(1);
                       handleFormInteract();
-                      // Dynamic relatable GIF
-                      const query = 
-                        cat === "Report a Bug" ? "detective funny" :
-                        cat === "Ask a Question" ? "thinking funny" : 
-                        cat === "Report an Issue" ? "upset funny" : "happy funny";
-                      (window as any).refreshFeedbackGif?.(query, "stickers");
                     }}
                   >
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-bold text-foreground group-hover:text-primary transition-colors">{cat}</span>
-                      <span className="text-[11px] text-muted-foreground font-medium">
-                        {cat === "Share an Idea" && "Feature requests & suggestions"}
-                        {cat === "Report an Issue" && "Let us know what's wrong"}
-                        {cat === "Leave a Review" && "Share your experience with us"}
-                        {cat === "Ask a Question" && "We'll get back to you soon"}
-                        {cat === "Talk to the Team" && "Send a direct message"}
-                        {cat === "Report a Bug" && "Technical issues & errors"}
-                      </span>
+                      <span className="font-bold text-sm text-foreground group-hover:text-primary transition-colors">{cat}</span>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                      <ChevronDown className="w-4 h-4 -rotate-90" />
-                    </div>
+                    <ChevronDown className="w-3.5 h-3.5 -rotate-90" />
                   </Button>
                 ))}
               </div>
             </div>
           ) : (
             <>
-              <div className="flex items-center justify-between gap-3 mb-6 animate-in fade-in slide-in-from-left-4">
+              <div className="flex items-center justify-between gap-3 mb-5 animate-in fade-in slide-in-from-left-4">
                 <div className="flex items-center gap-3">
-                  <Button type="button" variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setStep(0)}>
-                    <ArrowLeft className="w-4 h-4" />
+                  <Button type="button" variant="ghost" size="icon" className="rounded-full h-7 w-7" onClick={() => setStep(0)}>
+                    <ArrowLeft className="w-3.5 h-3.5" />
                   </Button>
                   <div>
-                    <h2 className="font-bold text-lg leading-none">{form.category}</h2>
-                    <p className="text-xs text-muted-foreground mt-1">Sharing with {biz.business_name}</p>
+                    <h2 className="font-bold text-[17px] leading-none">{form.category}</h2>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Sharing with {biz.business_name}</p>
                   </div>
                 </div>
-                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold" onClick={handleCancel}>
+                <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs font-semibold h-7" onClick={handleCancel}>
                   Cancel
                 </Button>
               </div>
@@ -609,9 +721,9 @@ const PublicFeedback = () => {
                 )}
               </div>
 
-              <form onSubmit={submit} className="space-y-6">
-                <div className={`bg-secondary/30 p-5 rounded-2xl transition-all ${form.category === "Review" ? "opacity-100" : "opacity-70 scale-95"}`}>
-                  <Label className="block mb-3 text-center text-base font-semibold">Rate your experience</Label>
+              <form onSubmit={submit} className="space-y-4">
+                <div className={`bg-secondary/30 p-4 rounded-2xl transition-all ${form.category === "Review" ? "opacity-100" : "opacity-70 scale-95"}`}>
+                  <Label className="block mb-2 text-center text-sm font-semibold">Rate your experience</Label>
                   <div className="flex justify-center gap-2">
                     {[1,2,3,4,5].map((n) => (
                       <button type="button" key={n} onClick={() => { 
@@ -620,8 +732,8 @@ const PublicFeedback = () => {
                         // Update GIF based on rating
                         const query = n >= 4 ? "happy dance" : n <= 2 ? "sad face" : "thinking funny";
                         (window as any).refreshFeedbackGif(query, "stickers");
-                      }} className="p-2 transition-all hover:scale-110 active:scale-95 touch-manipulation">
-                        <Star className={`w-10 h-10 ${form.rating >= n ? "fill-warning text-warning drop-shadow-sm" : "text-muted-foreground/30"}`} />
+                      }} className="p-1 transition-all hover:scale-110 active:scale-95 touch-manipulation">
+                        <Star className={`w-9 h-9 ${form.rating >= n ? "fill-warning text-warning drop-shadow-sm" : "text-muted-foreground/30"}`} />
                       </button>
                     ))}
                   </div>
@@ -633,9 +745,9 @@ const PublicFeedback = () => {
                   </div>
                 )}
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div>
-                    <Textarea onClick={handleFormInteract} className="resize-none text-base p-4 rounded-2xl" rows={4} value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} placeholder={
+                    <Textarea onClick={handleFormInteract} className="resize-none text-sm p-3.5 rounded-2xl" rows={3} value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} placeholder={
                       form.category === "Report an Issue" ? "What went wrong? We're here to listen. 😠" :
                       form.category === "Share an Idea" ? "How can we make things better? 💡" :
                       form.category === "Ask a Question" ? "What can we help you with? ❓" :
@@ -710,9 +822,9 @@ const PublicFeedback = () => {
                   )}
 
                   {/* Audio Recorder Section */}
-                  <div className="bg-secondary/20 p-4 rounded-xl border border-border/50">
-                    <Label className="block mb-2 text-sm font-semibold flex items-center gap-2">
-                      <Mic className="w-4 h-4" /> Voice Memo (Optional)
+                  <div className="bg-secondary/15 p-3.5 rounded-xl border border-border/50">
+                    <Label className="block mb-1.5 text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1 flex items-center gap-2">
+                      <Mic className="w-3.5 h-3.5" /> Voice Memo (Optional)
                     </Label>
                     
                     {!isRecording && !audioUrl && (
@@ -757,11 +869,11 @@ const PublicFeedback = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in zoom-in-95 duration-300">
                       <div className="space-y-1.5">
                         <Label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Your Name</Label>
-                        <Input id="name" value={form.customer_name} onChange={(e)=>setForm({...form, customer_name:e.target.value})} placeholder="John Doe" className="h-11 bg-secondary/20 border-border/50 focus:ring-primary/20" />
+                        <Input id="name" value={form.customer_name} onChange={(e)=>setForm({...form, customer_name:e.target.value})} placeholder="John Doe" className="h-10 text-sm bg-secondary/20 border-border/50 focus:ring-primary/20" />
                       </div>
                       <div className="space-y-1.5">
                         <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Your Email</Label>
-                        <Input id="email" type="email" value={form.customer_email} onChange={(e)=>setForm({...form, customer_email:e.target.value})} placeholder="john@example.com" className="h-11 bg-secondary/20 border-border/50 focus:ring-primary/20" />
+                        <Input id="email" type="email" value={form.customer_email} onChange={(e)=>setForm({...form, customer_email:e.target.value})} placeholder="john@example.com" className="h-10 text-sm bg-secondary/20 border-border/50 focus:ring-primary/20" />
                         <p className="text-[10px] text-muted-foreground mt-1 ml-1 flex items-center gap-1">
                           <BellRing className="w-3 h-3" /> Get notified when they reply
                         </p>
@@ -803,7 +915,7 @@ const PublicFeedback = () => {
                     />
                   </div>
 
-                  <Button type="submit" disabled={loading} className="w-full h-14 text-lg font-bold bg-gradient-cta shadow-glow hover:scale-[1.01] active:scale-[0.99] transition-all rounded-2xl group">
+                  <Button type="submit" disabled={loading} className="w-full h-12 text-base font-bold bg-gradient-cta shadow-glow hover:scale-[1.01] active:scale-[0.99] transition-all rounded-2xl group">
                     {loading ? (
                       <div className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Sending...</div>
                     ) : (

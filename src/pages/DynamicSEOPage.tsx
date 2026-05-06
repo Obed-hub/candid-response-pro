@@ -40,27 +40,51 @@ export const DynamicSEOPage = () => {
         keywords={`${page.keyword}, feedback, userpov, customer insights`}
         canonical={`https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`}
       />
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": page.type === "location" ? "LocalBusiness" : "Service",
-          "name": `UserPOV for ${page.name}`,
-          "description": page.metaDescription,
-          "url": `https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`,
-          "provider": {
-            "@type": "Organization",
-            "name": "UserPOV",
-            "url": "https://userpov.online"
+      <script type="application/ld+json" data-schema="userpov-dynamic">
+        {JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": page.type === "location" ? "LocalBusiness" : "Service",
+            "name": `UserPOV for ${page.name}`,
+            "description": page.metaDescription,
+            "url": `https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`,
+            "provider": {
+              "@id": "https://userpov.online/#organization"
+            },
+            "areaServed": page.type === "location" ? {
+              "@type": "City",
+              "name": page.name
+            } : undefined,
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`
+            }
           },
-          "areaServed": page.type === "location" ? {
-            "@type": "City",
-            "name": page.name
-          } : undefined,
-          "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": `https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://userpov.online"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": page.type === "industry" ? "Industries" : page.type.charAt(0).toUpperCase() + page.type.slice(1).replace(/-/g, ' ') + 's',
+                "item": `https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": page.name,
+                "item": `https://userpov.online/${page.type === "location" ? "locations" : page.type === "industry" ? "industries" : "use-cases"}/${page.slug}`
+              }
+            ]
           }
-        })}
+        ])}
       </script>
       <SiteHeader />
 

@@ -15,6 +15,7 @@ export const SiteFooter = () => (
           <li><a href="/#features" className="hover:text-foreground">Features</a></li>
           <li><a href="/#how" className="hover:text-foreground">How it works</a></li>
           <li><a href="/pricing" className="hover:text-foreground">Pricing</a></li>
+          <li><a href="/roadmap" className="hover:text-foreground">Public Roadmap</a></li>
         </ul>
       </div>
       <div>
@@ -22,26 +23,26 @@ export const SiteFooter = () => (
         <ul className="space-y-2 text-sm text-muted-foreground">
           <li><a href="/industries/restaurants" className="hover:text-foreground">Restaurants</a></li>
           <li><a href="/industries/salons" className="hover:text-foreground">Salons & Spas</a></li>
-          <li><a href="/industries/gyms" className="hover:text-foreground">Gyms & Fitness</a></li>
           <li><a href="/industries/saas" className="hover:text-foreground">SaaS & Startups</a></li>
-          <li><a href="/industries/clinics" className="hover:text-foreground">Clinics</a></li>
+          <li><a href="/industries/ecommerce" className="hover:text-foreground">E-commerce</a></li>
+          <li><a href="/industries/agencies" className="hover:text-foreground">Agencies</a></li>
         </ul>
       </div>
       <div>
-        <h4 className="font-semibold text-sm mb-3">Locations</h4>
+        <h4 className="font-semibold text-sm mb-3">Popular Pages</h4>
         <ul className="space-y-2 text-sm text-muted-foreground">
-          <li><a href="/locations/london" className="hover:text-foreground">London</a></li>
-          <li><a href="/locations/united-states" className="hover:text-foreground">United States</a></li>
-          <li><a href="/locations/nigeria" className="hover:text-foreground">Nigeria</a></li>
-          <li><a href="/locations/ghana" className="hover:text-foreground">Ghana</a></li>
+          <li><a href="/use-cases/qr-feedback" className="hover:text-foreground">QR Code Feedback</a></li>
+          <li><a href="/industries/shopify" className="hover:text-foreground">Shopify Feedback</a></li>
+          <li><a href="/industries/events" className="hover:text-foreground">Event Feedback</a></li>
+          <li><a href="/industries/freelancers" className="hover:text-foreground">Freelancer Tool</a></li>
         </ul>
       </div>
       <div>
         <h4 className="font-semibold text-sm mb-3">Company</h4>
         <ul className="space-y-2 text-sm text-muted-foreground">
           <li><a href="/about-us" className="hover:text-foreground">About Us</a></li>
-          <li><a href="/privacy" className="hover:text-foreground">Privacy</a></li>
-          <li><a href="/terms" className="hover:text-foreground">Terms</a></li>
+          <li><a href="/privacy" className="hover:text-foreground">Privacy Policy</a></li>
+          <li><a href="/terms" className="hover:text-foreground">Terms of Service</a></li>
         </ul>
       </div>
     </div>

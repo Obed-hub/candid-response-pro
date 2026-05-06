@@ -14,7 +14,7 @@
   const mode = (script.getAttribute('data-mode') || 'feedback').toLowerCase(); 
   const isStandalone = script.getAttribute('data-standalone') === 'true';
   const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-    ? window.location.origin 
+    ? 'http://localhost:5173' 
     : 'https://userpov.online';
 
   if (!slug) {
@@ -252,7 +252,6 @@
   window.addEventListener('message', function(e) {
     if (e.data === 'close-widget') toggleWidget(false);
     if (e.data === 'start-visual-feedback') startVisualFeedback();
-    if (e.data === 'close-widget') toggleWidget(false);
     if (e.data.type === 'init-settings') {
       settings = e.data.settings;
       if (settings && settings.button_text && mode !== 'community') {

@@ -387,6 +387,9 @@ export type Database = {
           created_at: string
           delay_seconds: number | null
           exit_intent_enabled: boolean | null
+          emoji_widget_enabled: boolean | null
+          emoji_widget_followup: string | null
+          emoji_widget_title: string | null
           id: string
           is_enabled: boolean
           position: string
@@ -400,6 +403,9 @@ export type Database = {
           created_at?: string
           delay_seconds?: number | null
           exit_intent_enabled?: boolean | null
+          emoji_widget_enabled?: boolean | null
+          emoji_widget_followup?: string | null
+          emoji_widget_title?: string | null
           id?: string
           is_enabled?: boolean
           position?: string
@@ -413,6 +419,9 @@ export type Database = {
           created_at?: string
           delay_seconds?: number | null
           exit_intent_enabled?: boolean | null
+          emoji_widget_enabled?: boolean | null
+          emoji_widget_followup?: string | null
+          emoji_widget_title?: string | null
           id?: string
           is_enabled?: boolean
           position?: string

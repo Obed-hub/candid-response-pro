@@ -10,7 +10,8 @@ import { toast } from "sonner";
 import { SEO } from "@/components/SEO";
 
 const CommunityPage = () => {
-  const { slug } = useParams();
+  const { slug: rawSlug } = useParams();
+  const slug = rawSlug || "userpov";
   const [searchParams] = useSearchParams();
   const isEmbedded = searchParams.get("embed") === "true";
   const isStandalone = searchParams.get("standalone") === "true";
@@ -200,10 +201,10 @@ const CommunityPage = () => {
 
       <div className={`${(isEmbedded && !isStandalone) ? "px-2" : "max-w-5xl mx-auto px-4"}`}>
         {(!isEmbedded || isStandalone) ? (
-          <div className="mb-10 text-center">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Group Roadmap</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Help us shape the future of <b>{business.business_name}</b> by upvoting your favorite ideas and suggestions.
+          <div className="mb-6 text-center">
+            <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-2">Group Roadmap</h2>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              Help us shape the future of <b>{business.business_name}</b> by upvoting your favorite ideas.
             </p>
           </div>
         ) : (
@@ -251,10 +252,10 @@ const CommunityPage = () => {
             )}
           </Card>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-3">
             {filteredFeedbacks.map((item) => (
-              <Card key={item.id} className="p-5 border-none shadow-sm hover:shadow-md transition-all group bg-white dark:bg-zinc-900 overflow-hidden relative">
-                <div className="flex gap-5">
+              <Card key={item.id} className="p-3.5 border-none shadow-sm hover:shadow-md transition-all group bg-white dark:bg-zinc-900 overflow-hidden relative">
+                <div className="flex gap-4">
                   <div className="flex flex-col items-center justify-start pt-1">
                     <button 
                       onClick={() => handleUpvote(item.id)}
@@ -292,20 +293,20 @@ const CommunityPage = () => {
                       </span>
                     </div>
 
-                    <h3 className="font-bold text-zinc-900 dark:text-zinc-100 mb-2 leading-tight">
+                    <h3 className="font-bold text-zinc-900 dark:text-zinc-100 mb-1 leading-tight text-[15px]">
                       {item.message.length > 100 ? item.message.substring(0, 100) + "..." : item.message}
                     </h3>
                     
                     {item.message.length > 100 && (
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 line-clamp-2">
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2 line-clamp-2">
                         {item.message}
                       </p>
                     )}
 
                     {item.business_reply && (
-                      <div className="mt-4 p-4 bg-primary/5 rounded-xl border border-primary/10 relative overflow-hidden">
+                      <div className="mt-3 p-3 bg-primary/5 rounded-xl border border-primary/10 relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-1 h-full bg-primary/20" />
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-2 mb-1.5">
                           <div className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold">
                             {business.business_name[0]}
                           </div>

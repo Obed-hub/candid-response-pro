@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run sitemap",
     "build:dev": "vite build --mode development",
+    "sitemap": "node scripts/expand-seo-data.cjs && node scripts/polish-seo-data.cjs && node scripts/generate-sitemap.cjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

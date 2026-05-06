@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const BASE_URL = 'https://userpov.com';
+const BASE_URL = 'https://userpov.online';
 const SEO_DATA_PATH = path.join(__dirname, '../src/data/seo-data.ts');
 const PUBLIC_DIR = path.join(__dirname, '../public');
 
@@ -17,6 +17,9 @@ function generateSitemap() {
     '/login',
     '/signup',
     '/dashboard',
+    '/roadmap',
+    '/privacy',
+    '/terms',
   ];
 
   // Read seo-data.ts
@@ -40,16 +43,21 @@ function generateSitemap() {
     dynamicRoutes.push(`${pathPrefix}${slug}`);
   }
 
-  const allRoutes = [...staticRoutes, ...dynamicRoutes];
+  const allRoutes = [...new Set([...staticRoutes, ...dynamicRoutes])];
   const date = new Date().toISOString().split('T')[0];
 
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${allRoutes.map(route => `  <url>
     <loc>${BASE_URL}${route}</loc>
     <lastmod>${date}</lastmod>
     <changefreq>${route === '/' ? 'daily' : 'weekly'}</changefreq>
     <priority>${route === '/' ? '1.0' : '0.8'}</priority>
+    ${route === '/' ? `
+    <image:image>
+      <image:loc>${BASE_URL}/og-image.png</image:loc>
+      <image:title>userpov — Get the Point Of View</image:title>
+    </image:image>` : ''}
   </url>`).join('\n')}
 </urlset>`;
 

@@ -7,7 +7,9 @@ const US_CITIES = [
   "Jacksonville", "Fort Worth", "Columbus", "Charlotte", "Indianapolis", "Seattle", "Denver", "Washington", "El Paso", "Nashville",
   "Oklahoma City", "Las Vegas", "Portland", "Detroit", "Memphis", "Louisville", "Milwaukee", "Baltimore", "Albuquerque", "Tucson",
   "Fresno", "Sacramento", "Mesa", "Kansas City", "Atlanta", "Long Beach", "Omaha", "Raleigh", "Colorado Springs", "Miami",
-  "Virginia Beach", "Oakland", "Minneapolis", "Tulsa", "Arlington", "New Orleans", "Wichita", "Cleveland", "Tampa", "Bakersfield"
+  "Virginia Beach", "Oakland", "Minneapolis", "Tulsa", "Arlington", "New Orleans", "Wichita", "Cleveland", "Tampa", "Bakersfield",
+  "Anaheim", "Santa Ana", "St. Louis", "Riverside", "Corpus Christi", "Lexington", "Henderson", "Stockton", "St. Paul", "Cincinnati",
+  "Irvine", "Orlando", "Pittsburgh", "Laredo", "Anchorage", "Lincoln", "Jersey City", "Durham", "Chandler", "Chula Vista"
 ];
 
 const UK_CITIES = [
@@ -74,7 +76,6 @@ function expand() {
 
   const newRecords = [];
   
-  /*
   // Add US Cities
   US_CITIES.forEach(city => {
     if (!content.includes(`slug: "${city.toLowerCase().replace(/\s+/g, '-')}"`)) {
@@ -95,7 +96,40 @@ function expand() {
       newRecords.push(generateLocationRecord(city, 'NG'));
     }
   });
-  */
+
+  // Add New Industries if not present
+  INDUSTRIES.forEach(industry => {
+    const slug = industry.toLowerCase().replace(/\s+/g, '-');
+    if (!content.includes(`slug: "${slug}"`)) {
+      newRecords.push(`  {
+    slug: "${slug}",
+    type: "industry",
+    name: "${industry}",
+    keyword: "anonymous feedback for ${industry.toLowerCase()}",
+    shortDescription: "Let clients rate your ${industry.toLowerCase()} service privately.",
+    metaTitle: "Anonymous Feedback for ${industry} | UserPOV",
+    metaDescription: "Improve your ${industry.toLowerCase()} business with real-time feedback insights.",
+    heroTitle: "Collect anonymous feedback as a ${industry.toLowerCase()}",
+    heroSubtitle: "Understand exactly what your customers think. Capture real-time insights on quality and service.",
+    ctaPrimary: "Start for free",
+    useCases: [
+      { title: "Service Quality", description: "Rate the overall experience." },
+      { title: "Customer Support", description: "Identify issues in communication." }
+    ],
+    painPoints: ["Customers leave silently", "Hard to track service quality"],
+    benefits: ["Higher retention", "Better brand reputation"],
+    features: [
+      { name: "QR Feedback", description: "Collect insights instantly." },
+      { name: "Private Replies", description: "Resolve issues fast." }
+    ],
+    sampleFeedback: ["Great service!", "Would recommend to others."],
+    faqs: [
+      { question: "Is it anonymous?", answer: "Yes, 100%." }
+    ],
+    relatedPages: ["anonymous-feedback-for-retail"]
+  }`);
+    }
+  });
 
   console.log(`Adding ${newRecords.length} new records...`);
 

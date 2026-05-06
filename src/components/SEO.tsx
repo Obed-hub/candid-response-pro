@@ -9,7 +9,7 @@ interface SEOProps {
   canonical?: string;
 }
 
-export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogType = "website", canonical }: SEOProps) => {
+export const SEO = ({ title, description, keywords, ogImage = "https://userpov.online/og-image.png", ogType = "website", canonical }: SEOProps) => {
   useEffect(() => {
     document.title = `${title} | userpov`;
 
@@ -67,9 +67,10 @@ export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogTyp
     const organizationSchema = {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://userpov.online/#organization",
       "name": "UserPOV",
       "url": "https://userpov.online",
-      "logo": "https://userpov.online/logo.png",
+      "logo": "https://userpov.online/icon.png",
       "description": "Anonymous customer feedback platform for digital and physical businesses.",
       "sameAs": [
         "https://twitter.com/userpov",
@@ -80,53 +81,74 @@ export const SEO = ({ title, description, keywords, ogImage = "/logo.png", ogTyp
     const websiteSchema = {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://userpov.online/#website",
       "name": "UserPOV",
       "url": "https://userpov.online",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://userpov.online/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "publisher": { "@id": "https://userpov.online/#organization" }
+    };
+
+    // Breadcrumbs logic
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const breadcrumbList = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://userpov.online"
+        },
+        ...pathSegments.map((segment, index) => ({
+          "@type": "ListItem",
+          "position": index + 2,
+          "name": segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+          "item": `https://userpov.online/${pathSegments.slice(0, index + 1).join('/')}`
+        }))
+      ]
     };
 
     const navigationSchema = {
       "@context": "https://schema.org",
       "@type": "ItemList",
+      "name": "Main Navigation",
       "itemListElement": [
         {
           "@type": "SiteNavigationElement",
           "position": 1,
-          "name": "Group Roadmap",
-          "url": "https://userpov.online/roadmap"
-        },
-        {
-          "@type": "SiteNavigationElement",
-          "position": 2,
           "name": "Pricing",
           "url": "https://userpov.online/pricing"
         },
         {
           "@type": "SiteNavigationElement",
+          "position": 2,
+          "name": "Roadmap",
+          "url": "https://userpov.online/roadmap"
+        },
+        {
+          "@type": "SiteNavigationElement",
           "position": 3,
           "name": "Industries",
-          "url": "https://userpov.online/industries"
+          "url": "https://userpov.online/#use-cases"
         },
         {
           "@type": "SiteNavigationElement",
           "position": 4,
-          "name": "Sign Up",
-          "url": "https://userpov.online/signup"
+          "name": "About Us",
+          "url": "https://userpov.online/about-us"
         }
       ]
     };
 
-    // Remove old schema scripts
-    document.querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove());
+    // Remove only OUR schema scripts to avoid nuking others
+    document.querySelectorAll('script[data-schema="userpov"]').forEach(el => el.remove());
 
     // Add new schemas
-    [organizationSchema, websiteSchema, navigationSchema].forEach(schema => {
+    [organizationSchema, websiteSchema, breadcrumbList, navigationSchema].forEach((schema, idx) => {
       const script = document.createElement("script");
       script.setAttribute("type", "application/ld+json");
+      script.setAttribute("data-schema", "userpov");
+      script.setAttribute("id", `schema-userpov-${idx}`);
       script.innerHTML = JSON.stringify(schema);
       document.head.appendChild(script);
     });

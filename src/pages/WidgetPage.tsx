@@ -62,6 +62,9 @@ const WidgetPage = () => {
       exit_intent_message: w.exit_intent_message,
       delay_seconds: w.delay_seconds,
       scroll_percent: w.scroll_percent,
+      emoji_widget_enabled: w.emoji_widget_enabled,
+      emoji_widget_title: w.emoji_widget_title,
+      emoji_widget_followup: w.emoji_widget_followup,
     }).eq("id", w.id);
     if (error) { toast.error(error.message); return; }
     toast.success("Widget saved!");
@@ -130,6 +133,41 @@ const WidgetPage = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                <div className="pt-6 border-t border-border space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-primary/5 rounded-xl border border-primary/10">
+                    <div>
+                      <Label className="text-primary font-bold flex items-center gap-2">
+                        <Zap className="w-4 h-4" /> Quick Emoji Mode
+                      </Label>
+                      <p className="text-[10px] text-muted-foreground">Start with an emoji rating for higher conversion.</p>
+                    </div>
+                    <Switch checked={w.emoji_widget_enabled} onCheckedChange={(v)=>setW({...w, emoji_widget_enabled:v})} />
+                  </div>
+
+                  {w.emoji_widget_enabled && (
+                    <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-3 pl-4 border-l-2 border-primary/20">
+                      <div>
+                        <Label className="text-xs">Emoji Widget Title</Label>
+                        <Input 
+                          placeholder="How was your experience?" 
+                          value={w.emoji_widget_title || ""} 
+                          onChange={(e)=>setW({...w, emoji_widget_title:e.target.value})} 
+                          className="h-8 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Follow-up Question</Label>
+                        <Input 
+                          placeholder="What could we have done better?" 
+                          value={w.emoji_widget_followup || ""} 
+                          onChange={(e)=>setW({...w, emoji_widget_followup:e.target.value})} 
+                          className="h-8 text-sm"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t border-border space-y-4 text-center p-4 bg-secondary/20 rounded-xl">

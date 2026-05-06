@@ -1223,7 +1223,7 @@ export const seoPages: SEOPageData[] = [
     heroSubtitle: "Listen to the pulse of Columbus. Capture real-time feedback from customers across the city.",
     ctaPrimary: "Grow in Columbus",
     useCases: [
-      { title: "Retail Experience", description: "Improve shopping in Columbus's diverse neighborhoods." },
+      { title: "Optimize shopping experience", description: "Learn exactly why customers leave your Columbus's diverse neighborhoods." },
       { title: "Hospitality Service", description: "Capture sentiment in Columbus's cafes and restaurants." },
       { title: "Local Tech Scene", description: "UX feedback for Columbus's growing business community." }
     ],
@@ -4909,5 +4909,6 @@ export const seoPages: SEOPageData[] = [
       { question: "Is it easy to set up?", answer: "You can be live in minutes." }
     ],
     relatedPages: ["anonymous-feedback-for-retail", "anonymous-feedback-for-restaurants"]
-  }
+  },
+
 ];
